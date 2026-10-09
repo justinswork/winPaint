@@ -46,6 +46,11 @@
         </StackPanel>
         <ListBox x:Name="List" ItemsSource="{Binding Items}" SelectedItem="{Binding Selected}" AutomationProperties.Name="{x:Static res:Strings.Layer_Panel}" AutomationProperties.AutomationId="LayerList"
                  BorderThickness="0" Background="Transparent" AllowDrop="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type vm:LayerItemViewModel}">
                     <Grid Margin="0,2" AutomationProperties.Name="{Binding Name}">
@@ -59,7 +64,7 @@
                         </Border>
                         <StackPanel Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center">
                             <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
-                            <TextBlock FontSize="11" Foreground="{DynamicResource SubtleTextBrush}" Text="{Binding TextCount, StringFormat={x:Static res:Strings.Layer_TextCount}}" />
+                            <TextBlock FontSize="11" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource SubtleTextBrush}" Text="{Binding TextCount, StringFormat={x:Static res:Strings.Layer_TextCount}}" />
                         </StackPanel>
                         <ToggleButton Grid.Column="2" Style="{StaticResource ToolToggle}" IsChecked="{Binding IsVisible}" ToolTip="{x:Static res:Strings.Layer_Visibility}"
                                       AutomationProperties.Name="{x:Static res:Strings.Layer_Visibility}" AutomationProperties.AutomationId="LayerVisibility" MinWidth="28" MinHeight="28">

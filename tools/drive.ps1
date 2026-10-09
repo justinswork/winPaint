@@ -25,8 +25,29 @@ $vp = $canvas.GetCurrentPattern([System.Windows.Automation.ValuePattern]::Patter
 function Find($id) { $win.FindFirst([System.Windows.Automation.TreeScope]::Descendants, (New-Object System.Windows.Automation.PropertyCondition($A::AutomationIdProperty, $id))) }
 foreach ($line in ($Script -join ";").Split(";")) {
     $s = $line.Trim(); if (-not $s) { continue }
-    if ($s.StartsWith("invoke:")) { (Find $s.Substring(7)).GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke() }
+    if ($s.StartsWith("invoke:")) {
+        $el = Find $s.Substring(7)
+        $ip = $null
+        if ($el.TryGetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern, [ref]$ip)) { $ip.Invoke() }
+        else { $el.GetCurrentPattern([System.Windows.Automation.TogglePattern]::Pattern).Toggle() }
+    }
     elseif ($s.StartsWith("type:")) { (Find "TextEditor").GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).SetValue($s.Substring(5).Replace("\n", "`n")) }
+    elseif ($s.StartsWith("name:")) {
+        $n = $s.Substring(5)
+        $e = $null
+        for ($t = 0; $t -lt 40 -and -not $e; $t++) {
+            $e = $A::RootElement.FindAll([System.Windows.Automation.TreeScope]::Children, (New-Object System.Windows.Automation.PropertyCondition($A::ProcessIdProperty, $p.Id))) |
+                ForEach-Object { $_.FindFirst([System.Windows.Automation.TreeScope]::Descendants, (New-Object System.Windows.Automation.PropertyCondition($A::NameProperty, $n))) } |
+                Where-Object { $_ } | Select-Object -First 1
+            if (-not $e) { Start-Sleep -Milliseconds 100 }
+        }
+        $e.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke()
+    }
+    elseif ($s.StartsWith("set:")) {
+        $kv = $s.Substring(4).Split("=", 2)
+        (Find $kv[0]).GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).SetValue($kv[1])
+        Start-Sleep -Milliseconds 500
+    }
     elseif ($s.StartsWith("sleep:")) { Start-Sleep -Milliseconds ([int]$s.Substring(6)) }
     else {
         $seq = [int](($vp.Current.Value -split "\|")[0] -replace "seq=","")

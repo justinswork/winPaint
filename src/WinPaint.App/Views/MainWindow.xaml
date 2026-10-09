@@ -12,6 +12,7 @@
         xmlns:sys="clr-namespace:System;assembly=System.Runtime"
         Title="{Binding Title}" Width="1280" Height="820" MinWidth="520" MinHeight="380"
         AutomationProperties.AutomationId="MainWindow"
+        Icon="/winPaint;component/Resources/winPaint.ico"
         Background="{DynamicResource ChromeBackgroundBrush}"
         AllowDrop="True" UseLayoutRounding="True">
     <Window.Resources>

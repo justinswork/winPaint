@@ -1,1 +1,1 @@
-3840x2160, 30 text objects + 30 strokes, editing the bottom-most text: 2.01 ms per keystroke (average of 40)
+3840x2160, 30 text objects + 30 strokes, editing the bottom-most text: 1.66 ms per keystroke (average of 40)
