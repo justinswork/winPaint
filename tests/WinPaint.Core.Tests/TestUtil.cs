@@ -56,6 +56,25 @@ internal static class TestUtil
         return Path.Combine(dir, name);
     }
 
+    /// <summary>Writes a measurement to artifacts/perf (evidence for the final report).</summary>
+    public static void RecordPerf(string name, string text)
+    {
+        var dir = new DirectoryInfo(AppContext.BaseDirectory);
+        while (dir is not null && !File.Exists(Path.Combine(dir.FullName, "winPaint.sln")))
+        {
+            dir = dir.Parent;
+        }
+
+        if (dir is null)
+        {
+            return;
+        }
+
+        var outDir = Path.Combine(dir.FullName, "artifacts", "perf");
+        Directory.CreateDirectory(outDir);
+        File.WriteAllText(Path.Combine(outDir, name + ".txt"), text + Environment.NewLine);
+    }
+
     /// <summary>Opaque color.</summary>
     public static Color C(byte r, byte g, byte b) => Color.FromRgb(r, g, b);
 }

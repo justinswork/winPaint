@@ -53,6 +53,7 @@ public sealed class ThumbnailWindow : Window
     private readonly Rectangle _viewRect = new() { Stroke = Brushes.DodgerBlue, StrokeThickness = 2, Fill = new SolidColorBrush(Color.FromArgb(30, 30, 144, 255)), IsHitTestVisible = false };
     private readonly Canvas _overlay = new();
     private readonly DispatcherTimer _refresh;
+    private Core.Document.PaintDocument _doc;
     private bool _dirty = true;
 
     /// <summary>Creates the window.</summary>
@@ -60,6 +61,7 @@ public sealed class ThumbnailWindow : Window
     {
         _vm = vm;
         _canvas = canvas;
+        _doc = vm.Document;
         Title = Strings.Dlg_Thumbnail;
         Width = 260;
         Height = 220;
@@ -91,17 +93,19 @@ public sealed class ThumbnailWindow : Window
         {
             _refresh.Stop();
             _canvas.ViewChanged -= OnViewChanged;
-            _vm.Document.Invalidated -= OnInvalidated;
+            _doc.Invalidated -= OnInvalidated;
             _vm.DocumentReplaced -= OnReplaced;
         };
-        _vm.Document.Invalidated += OnInvalidated;
+        _doc.Invalidated += OnInvalidated;
         _vm.DocumentReplaced += OnReplaced;
         RefreshImage();
     }
 
     private void OnReplaced(object? sender, EventArgs e)
     {
-        _vm.Document.Invalidated += OnInvalidated;
+        _doc.Invalidated -= OnInvalidated;
+        _doc = _vm.Document;
+        _doc.Invalidated += OnInvalidated;
         _dirty = true;
         RefreshImage();
     }

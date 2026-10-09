@@ -45,6 +45,11 @@ internal static class AutomationBridge
             ("transparentCanvas", vm.IsTransparentCanvas ? 1 : 0),
             ("statusBar", vm.ShowStatusBar ? 1 : 0),
             ("layersPanel", vm.ShowLayers ? 1 : 0),
+            ("custom0", vm.CustomColors.FirstOrDefault()?.Color?.ToString(CultureInfo.InvariantCulture)),
+            ("scroll", string.Create(CultureInfo.InvariantCulture, $"{window.Canvas.Transform.ScrollX:0},{window.Canvas.Transform.ScrollY:0}")),
+            ("managedMb", (GC.GetTotalMemory(false) / (1024 * 1024)).ToString(CultureInfo.InvariantCulture)),
+            ("busy", vm.IsBusy ? 1 : 0),
+            ("startupMs", window.StartupTime?.TotalMilliseconds.ToString("0", CultureInfo.InvariantCulture)),
             ("editSize", t?.FontSizePt.ToString(CultureInfo.InvariantCulture)),
             ("dirty", doc.IsDirty ? 1 : 0),
             ("notice", vm.StatusNotice),
@@ -100,6 +105,19 @@ internal static class AutomationBridge
                 return true;
             case "composite":
                 ImageCodec.Encode(vm.Document.Flatten(includeFloating: true), arg, ImageFormat.Png);
+                return true;
+            case "drop":
+                // Same path as dropping a file on the window (unsaved-changes prompt included).
+                _ = vm.OpenDroppedAsync(arg);
+                return true;
+            case "gc":
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+                return true;
+            case "crashtest":
+                // Diagnostics: raises an unhandled exception so the crash handler (log + recovery copy) can be verified.
+                window.Dispatcher.BeginInvoke(new Action(() => throw new InvalidOperationException("Simulated failure requested through the automation interface.")));
                 return true;
             case "focuscanvas":
                 window.Canvas.Viewport.Focus();
@@ -204,14 +222,15 @@ internal static class AutomationBridge
     public static void SaveSnapshot(FrameworkElement element, string path)
     {
         var dpi = VisualTreeHelper.GetDpi(element);
-        var w = (int)Math.Ceiling(element.ActualWidth * dpi.DpiScaleX);
-        var h = (int)Math.Ceiling(element.ActualHeight * dpi.DpiScaleY);
+        var m = element.Margin;
+        var w = (int)Math.Ceiling((element.ActualWidth + m.Left + m.Right) * dpi.DpiScaleX);
+        var h = (int)Math.Ceiling((element.ActualHeight + m.Top + m.Bottom) * dpi.DpiScaleY);
         var rtb = new RenderTargetBitmap(Math.Max(1, w), Math.Max(1, h), 96 * dpi.DpiScaleX, 96 * dpi.DpiScaleY, PixelFormats.Pbgra32);
         var bg = new DrawingVisual();
         using (var dc = bg.RenderOpen())
         {
             var brush = (Brush?)element.TryFindResource("ChromeBackgroundBrush") ?? Brushes.White;
-            dc.DrawRectangle(brush, null, new Rect(0, 0, element.ActualWidth, element.ActualHeight));
+            dc.DrawRectangle(brush, null, new Rect(0, 0, element.ActualWidth + m.Left + m.Right, element.ActualHeight + m.Top + m.Bottom));
         }
 
         rtb.Render(bg);

@@ -148,10 +148,10 @@
                 </MenuItem>
             </Menu>
             <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="8,0,0,0">
-                <Button Style="{StaticResource ToolButton}" Command="{Binding UndoCommand}" ToolTip="Undo (Ctrl+Z)" AutomationProperties.Name="Undo" AutomationProperties.AutomationId="UndoButton">
+                <Button Style="{StaticResource ToolButton}" Command="{Binding UndoCommand}" ToolTip="{x:Static res:Strings.Tip_Undo}" AutomationProperties.Name="{x:Static res:Strings.Name_Undo}" AutomationProperties.AutomationId="UndoButton">
                     <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Undo}" />
                 </Button>
-                <Button Style="{StaticResource ToolButton}" Command="{Binding RedoCommand}" ToolTip="Redo (Ctrl+Y)" AutomationProperties.Name="Redo" AutomationProperties.AutomationId="RedoButton">
+                <Button Style="{StaticResource ToolButton}" Command="{Binding RedoCommand}" ToolTip="{x:Static res:Strings.Tip_Redo}" AutomationProperties.Name="{x:Static res:Strings.Name_Redo}" AutomationProperties.AutomationId="RedoButton">
                     <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Redo}" />
                 </Button>
             </StackPanel>
@@ -174,24 +174,24 @@
                 <ComboBox Width="72" Margin="6,0,0,0" IsEditable="True" ItemsSource="{Binding Source={x:Static vm:MainViewModel.FontSizes}}" Text="{Binding TextFontSize, UpdateSourceTrigger=PropertyChanged, Delay=300}"
                           ToolTip="{x:Static res:Strings.Text_Size}" AutomationProperties.Name="{x:Static res:Strings.Text_Size}" AutomationProperties.AutomationId="FontSizeBox" />
                 <Border Style="{StaticResource GroupSeparator}" />
-                <ToggleButton Style="{StaticResource ToolToggle}" IsChecked="{Binding TextBold}" ToolTip="Bold (Ctrl+B)" AutomationProperties.Name="{x:Static res:Strings.Text_Bold}" AutomationProperties.AutomationId="BoldButton" Focusable="False">
+                <ToggleButton Style="{StaticResource ToolToggle}" IsChecked="{Binding TextBold}" ToolTip="{x:Static res:Strings.Tip_Bold}" AutomationProperties.Name="{x:Static res:Strings.Text_Bold}" AutomationProperties.AutomationId="BoldButton" Focusable="False">
                     <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Bold}" Width="14" Height="14" />
                 </ToggleButton>
-                <ToggleButton Style="{StaticResource ToolToggle}" IsChecked="{Binding TextItalic}" ToolTip="Italic (Ctrl+I)" AutomationProperties.Name="{x:Static res:Strings.Text_Italic}" AutomationProperties.AutomationId="ItalicButton" Focusable="False">
+                <ToggleButton Style="{StaticResource ToolToggle}" IsChecked="{Binding TextItalic}" ToolTip="{x:Static res:Strings.Tip_Italic}" AutomationProperties.Name="{x:Static res:Strings.Text_Italic}" AutomationProperties.AutomationId="ItalicButton" Focusable="False">
                     <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Italic}" Width="14" Height="14" />
                 </ToggleButton>
-                <ToggleButton Style="{StaticResource ToolToggle}" IsChecked="{Binding TextUnderline}" ToolTip="Underline (Ctrl+U)" AutomationProperties.Name="{x:Static res:Strings.Text_Underline}" AutomationProperties.AutomationId="UnderlineButton" Focusable="False">
+                <ToggleButton Style="{StaticResource ToolToggle}" IsChecked="{Binding TextUnderline}" ToolTip="{x:Static res:Strings.Tip_Underline}" AutomationProperties.Name="{x:Static res:Strings.Text_Underline}" AutomationProperties.AutomationId="UnderlineButton" Focusable="False">
                     <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Underline}" Width="14" Height="14" />
                 </ToggleButton>
                 <ToggleButton Style="{StaticResource ToolToggle}" IsChecked="{Binding TextStrikethrough}" ToolTip="{x:Static res:Strings.Text_Strikethrough}" AutomationProperties.Name="{x:Static res:Strings.Text_Strikethrough}" AutomationProperties.AutomationId="StrikeButton" Focusable="False">
                     <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Strike}" Width="14" Height="14" />
                 </ToggleButton>
                 <Border Style="{StaticResource GroupSeparator}" />
-                <RadioButton Style="{StaticResource ToolRadio}" GroupName="TextBg" IsChecked="{Binding TextOpaque, Converter={StaticResource EnumEq}, ConverterParameter=False, Mode=OneWay}" Command="{Binding MakeTextTransparentCommand}"
+                <RadioButton Style="{StaticResource ToolRadio}" GroupName="TextBg" IsChecked="{Binding TextOpaque, Converter={StaticResource InvertBool}}"
                              ToolTip="{x:Static res:Strings.Text_Transparent}" AutomationProperties.Name="{x:Static res:Strings.Text_Transparent}" AutomationProperties.AutomationId="TextTransparentButton" Focusable="False">
                     <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.TextBgTransparent}" />
                 </RadioButton>
-                <RadioButton Style="{StaticResource ToolRadio}" GroupName="TextBg" IsChecked="{Binding TextOpaque, Mode=OneWay}" Command="{Binding MakeTextOpaqueCommand}"
+                <RadioButton Style="{StaticResource ToolRadio}" GroupName="TextBg" IsChecked="{Binding TextOpaque}"
                              ToolTip="{x:Static res:Strings.Text_Opaque}" AutomationProperties.Name="{x:Static res:Strings.Text_Opaque}" AutomationProperties.AutomationId="TextOpaqueButton" Focusable="False">
                     <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.TextBgOpaque}" />
                 </RadioButton>
@@ -223,21 +223,8 @@
 
         <!-- Status bar -->
         <Border Grid.Row="4" Padding="10,3" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource SeparatorBrush}" Visibility="{Binding ShowStatusBar, Converter={StaticResource BoolVis}}" AutomationProperties.AutomationId="StatusBar">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="150" />
-                    <ColumnDefinition Width="150" />
-                    <ColumnDefinition Width="170" />
-                    <ColumnDefinition Width="140" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{Binding CursorText}" VerticalAlignment="Center" AutomationProperties.AutomationId="StatusCursor" />
-                <TextBlock Grid.Column="1" Text="{Binding SelectionText}" VerticalAlignment="Center" AutomationProperties.AutomationId="StatusSelection" />
-                <TextBlock Grid.Column="2" Text="{Binding ImageSizeText}" VerticalAlignment="Center" AutomationProperties.AutomationId="StatusImageSize" />
-                <TextBlock Grid.Column="3" Text="{Binding FileSizeText}" VerticalAlignment="Center" AutomationProperties.AutomationId="StatusFileSize" />
-                <TextBlock Grid.Column="4" Text="{Binding StatusNotice}" VerticalAlignment="Center" Foreground="{DynamicResource AccentBrush}" TextTrimming="CharacterEllipsis" AutomationProperties.AutomationId="StatusNotice" />
-                <StackPanel Grid.Column="5" Orientation="Horizontal">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
                     <TextBox Width="62" Text="{Binding ZoomPercent, StringFormat={}{0:0.#}%, UpdateSourceTrigger=LostFocus}" VerticalAlignment="Center" ToolTip="{x:Static res:Strings.Status_Zoom}"
                              AutomationProperties.Name="{x:Static res:Strings.Status_Zoom}" AutomationProperties.AutomationId="ZoomBox" KeyDown="OnZoomBoxKeyDown" />
                     <Button Style="{StaticResource ToolButton}" Command="{Binding ZoomOutCommand}" ToolTip="{x:Static res:Strings.Status_ZoomOut}" AutomationProperties.Name="{x:Static res:Strings.Status_ZoomOut}" AutomationProperties.AutomationId="ZoomOutButton" MinWidth="28" MinHeight="28">
@@ -251,7 +238,21 @@
                         <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Fit}" Width="14" Height="14" />
                     </Button>
                 </StackPanel>
-            </Grid>
+                <Grid ClipToBounds="True">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="170" />
+                        <ColumnDefinition Width="140" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="{Binding CursorText}" VerticalAlignment="Center" AutomationProperties.AutomationId="StatusCursor" />
+                <TextBlock Grid.Column="1" Text="{Binding SelectionText}" VerticalAlignment="Center" AutomationProperties.AutomationId="StatusSelection" />
+                <TextBlock Grid.Column="2" Text="{Binding ImageSizeText}" VerticalAlignment="Center" AutomationProperties.AutomationId="StatusImageSize" />
+                <TextBlock Grid.Column="3" Text="{Binding FileSizeText}" VerticalAlignment="Center" AutomationProperties.AutomationId="StatusFileSize" />
+                <TextBlock Grid.Column="4" Text="{Binding StatusNotice}" VerticalAlignment="Center" Foreground="{DynamicResource AccentBrush}" TextTrimming="CharacterEllipsis" AutomationProperties.AutomationId="StatusNotice" />
+                </Grid>
+            </DockPanel>
         </Border>
     </Grid>
 </Window>

@@ -8,18 +8,34 @@ namespace WinPaint.Core.Document;
 /// <summary>
 /// Whole-image operations. Raster segments are transformed as pixels and live text objects get the same transform
 /// appended to their <see cref="TextObject.Transform"/>, so they stay editable and re-render crisply.
-/// Each method commits exactly one undo step.
+/// Each method commits exactly one undo step. The *Async variants run the pixel work through an
+/// <see cref="Offload"/> (e.g. a background task) while the document is only touched on the calling thread.
 /// </summary>
 public static class ImageOperations
 {
+    /// <summary>Runs pure pixel work somewhere (inline or on a background thread).</summary>
+    /// <param name="work">The work; it must not touch the document or any UI object.</param>
+    /// <returns>A task completing when the work has run.</returns>
+    public delegate Task Offload(Action work);
+
+    /// <summary>Runs the work synchronously on the calling thread.</summary>
+    public static Offload Inline { get; } = work =>
+    {
+        work();
+        return Task.CompletedTask;
+    };
+
     /// <summary>Rotates or flips the whole image.</summary>
-    public static void Orthogonal(PaintDocument doc, OrthoTransform t)
+    public static void Orthogonal(PaintDocument doc, OrthoTransform t) => OrthogonalAsync(doc, t, Inline).GetAwaiter().GetResult();
+
+    /// <summary>Rotates or flips the whole image, offloading the pixel work.</summary>
+    public static async Task OrthogonalAsync(PaintDocument doc, OrthoTransform t, Offload offload)
     {
         ArgumentNullException.ThrowIfNull(doc);
         var (w, h) = (doc.Width, doc.Height);
         var (nw, nh) = Transforms.SizeAfter(t, w, h);
         var m = Transforms.MatrixFor(t, w, h);
-        TransformAll(doc, nw, nh, (buf, _) => Transforms.Apply(buf, t), m);
+        await TransformAllAsync(doc, nw, nh, (buf, _) => Transforms.Apply(buf, t), m, offload).ConfigureAwait(true);
         doc.Commit(t switch
         {
             OrthoTransform.FlipHorizontal => "Flip horizontal",
@@ -29,7 +45,10 @@ public static class ImageOperations
     }
 
     /// <summary>Resizes the whole image (high quality; nearest neighbor for exact integer upscales).</summary>
-    public static void Resize(PaintDocument doc, int width, int height)
+    public static void Resize(PaintDocument doc, int width, int height) => ResizeAsync(doc, width, height, Inline).GetAwaiter().GetResult();
+
+    /// <summary>Resizes the whole image, offloading the pixel work.</summary>
+    public static async Task ResizeAsync(PaintDocument doc, int width, int height, Offload offload)
     {
         ArgumentNullException.ThrowIfNull(doc);
         if (width == doc.Width && height == doc.Height)
@@ -38,12 +57,16 @@ public static class ImageOperations
         }
 
         var m = new Matrix((double)width / doc.Width, 0, 0, (double)height / doc.Height, 0, 0);
-        TransformAll(doc, width, height, (buf, _) => Resampler.ResizeAuto(buf, width, height), m);
+        await TransformAllAsync(doc, width, height, (buf, _) => Resampler.ResizeAuto(buf, width, height), m, offload).ConfigureAwait(true);
         doc.Commit("Resize");
     }
 
     /// <summary>Skews the whole image by horizontal/vertical angles in degrees.</summary>
-    public static void Skew(PaintDocument doc, double horizontalDeg, double verticalDeg, Color secondary)
+    public static void Skew(PaintDocument doc, double horizontalDeg, double verticalDeg, Color secondary) =>
+        SkewAsync(doc, horizontalDeg, verticalDeg, secondary, Inline).GetAwaiter().GetResult();
+
+    /// <summary>Skews the whole image, offloading the pixel work.</summary>
+    public static async Task SkewAsync(PaintDocument doc, double horizontalDeg, double verticalDeg, Color secondary, Offload offload)
     {
         ArgumentNullException.ThrowIfNull(doc);
         if (horizontalDeg == 0 && verticalDeg == 0)
@@ -53,7 +76,7 @@ public static class ImageOperations
 
         var (m, nw, nh) = Transforms.SkewGeometry(doc.Width, doc.Height, horizontalDeg, verticalDeg);
         var fill = ColorUtil.FromColor(secondary);
-        TransformAll(doc, nw, nh, (buf, opaqueBase) => Transforms.Affine(buf, m, nw, nh, opaqueBase ? fill : 0), m);
+        await TransformAllAsync(doc, nw, nh, (buf, opaqueBase) => Transforms.Affine(buf, m, nw, nh, opaqueBase ? fill : 0), m, offload).ConfigureAwait(true);
         doc.Commit("Skew");
     }
 
@@ -83,7 +106,7 @@ public static class ImageOperations
         }
 
         var m = new Matrix(1, 0, 0, 1, -rect.X, -rect.Y);
-        TransformAll(doc, rect.Width, rect.Height, (buf, _) => buf.Crop(rect), m);
+        TransformAllAsync(doc, rect.Width, rect.Height, (buf, _) => buf.Crop(rect), m, Inline).GetAwaiter().GetResult();
         if (commit)
         {
             doc.Commit("Crop");
@@ -129,57 +152,47 @@ public static class ImageOperations
     }
 
     /// <summary>Inverts the colors of the active layer, including its live text colors.</summary>
-    public static void InvertColors(PaintDocument doc)
+    public static void InvertColors(PaintDocument doc) => InvertColorsAsync(doc, Inline).GetAwaiter().GetResult();
+
+    /// <summary>Inverts the colors of the active layer, offloading the pixel work.</summary>
+    public static async Task InvertColorsAsync(PaintDocument doc, Offload offload)
     {
         ArgumentNullException.ThrowIfNull(doc);
-        var layer = doc.ActiveLayer;
-        foreach (var e in layer.Elements)
-        {
-            switch (e)
+        await MapSegmentsAsync(
+            [doc.ActiveLayer],
+            b => Transforms.Invert(b),
+            t =>
             {
-                case RasterSegment s:
-                    var b = s.Pixels.ToPixelBuffer();
-                    Transforms.Invert(b);
-                    s.Pixels = TiledSurface.FromPixelBuffer(b);
-                    break;
-                case TextObject t:
-                    t.Foreground = ColorUtil.Invert(t.Foreground);
-                    t.Background = ColorUtil.Invert(t.Background);
-                    break;
-            }
-        }
-
+                t.Foreground = ColorUtil.Invert(t.Foreground);
+                t.Background = ColorUtil.Invert(t.Background);
+            },
+            offload).ConfigureAwait(true);
         doc.InvalidateAll();
         doc.Commit("Invert colors");
     }
 
     /// <summary>Converts every layer to black and white (luminance threshold), including text colors.</summary>
-    public static void BlackAndWhite(PaintDocument doc)
+    public static void BlackAndWhite(PaintDocument doc) => BlackAndWhiteAsync(doc, Inline).GetAwaiter().GetResult();
+
+    /// <summary>Converts every layer to black and white, offloading the pixel work.</summary>
+    public static async Task BlackAndWhiteAsync(PaintDocument doc, Offload offload)
     {
         ArgumentNullException.ThrowIfNull(doc);
-        foreach (var layer in doc.Layers)
-        {
-            foreach (var e in layer.Elements)
+        await MapSegmentsAsync(
+            doc.Layers,
+            b =>
             {
-                switch (e)
+                for (var i = 0; i < b.Pixels.Length; i++)
                 {
-                    case RasterSegment s:
-                        var b = s.Pixels.ToPixelBuffer();
-                        for (var i = 0; i < b.Pixels.Length; i++)
-                        {
-                            b.Pixels[i] = ColorUtil.ToBlackWhite(b.Pixels[i]);
-                        }
-
-                        s.Pixels = TiledSurface.FromPixelBuffer(b);
-                        break;
-                    case TextObject t:
-                        t.Foreground = ColorUtil.ToBlackWhite(t.Foreground);
-                        t.Background = ColorUtil.ToBlackWhite(t.Background);
-                        break;
+                    b.Pixels[i] = ColorUtil.ToBlackWhite(b.Pixels[i]);
                 }
-            }
-        }
-
+            },
+            t =>
+            {
+                t.Foreground = ColorUtil.ToBlackWhite(t.Foreground);
+                t.Background = ColorUtil.ToBlackWhite(t.Background);
+            },
+            offload).ConfigureAwait(true);
         doc.InvalidateAll();
         doc.Commit("Black and white");
     }
@@ -236,30 +249,86 @@ public static class ImageOperations
         return n;
     }
 
-    private static void TransformAll(PaintDocument doc, int nw, int nh, Func<PixelBuffer, bool, PixelBuffer> pixelOp, Matrix textMatrix)
+    private static async Task MapSegmentsAsync(IEnumerable<Layer> layers, Action<PixelBuffer> pixelOp, Action<TextObject> textOp, Offload offload)
     {
+        var jobs = new List<(RasterSegment Segment, PixelBuffer Source)>();
+        foreach (var layer in layers)
+        {
+            foreach (var e in layer.Elements)
+            {
+                switch (e)
+                {
+                    case RasterSegment s:
+                        jobs.Add((s, s.Pixels.ToPixelBuffer()));
+                        break;
+                    case TextObject t:
+                        textOp(t);
+                        break;
+                }
+            }
+        }
+
+        var results = new TiledSurface[jobs.Count];
+        await offload(() =>
+        {
+            for (var i = 0; i < jobs.Count; i++)
+            {
+                pixelOp(jobs[i].Source);
+                results[i] = TiledSurface.FromPixelBuffer(jobs[i].Source);
+            }
+        }).ConfigureAwait(true);
+        for (var i = 0; i < jobs.Count; i++)
+        {
+            jobs[i].Segment.Pixels = results[i];
+        }
+    }
+
+    private static async Task TransformAllAsync(PaintDocument doc, int nw, int nh, Func<PixelBuffer, bool, PixelBuffer> pixelOp, Matrix textMatrix, Offload offload)
+    {
+        // Gather on the calling thread, transform pure pixel buffers through the offload, then apply.
+        var jobs = new List<(RasterSegment Segment, bool Erase, PixelBuffer Source, bool OpaqueBase)>();
         foreach (var layer in doc.Layers)
         {
             for (var i = 0; i < layer.Elements.Count; i++)
             {
-                switch (layer.Elements[i])
+                if (layer.Elements[i] is RasterSegment s)
                 {
-                    case RasterSegment s:
-                        var opaqueBase = i == 0 && layer.IsBackground && !layer.IsTransparent;
-                        s.Pixels = TiledSurface.FromPixelBuffer(pixelOp(s.Pixels.ToPixelBuffer(), opaqueBase));
-                        if (s.Erase is not null)
-                        {
-                            s.Erase = TiledSurface.FromPixelBuffer(pixelOp(s.Erase.ToPixelBuffer(), false));
-                        }
-
-                        break;
-                    case TextObject t:
-                        var m = t.Transform;
-                        m.Append(textMatrix);
-                        t.Transform = m;
-                        break;
+                    var opaqueBase = i == 0 && layer.IsBackground && !layer.IsTransparent;
+                    jobs.Add((s, false, s.Pixels.ToPixelBuffer(), opaqueBase));
+                    if (s.Erase is not null)
+                    {
+                        jobs.Add((s, true, s.Erase.ToPixelBuffer(), false));
+                    }
                 }
             }
+        }
+
+        var results = new TiledSurface[jobs.Count];
+        await offload(() =>
+        {
+            for (var i = 0; i < jobs.Count; i++)
+            {
+                results[i] = TiledSurface.FromPixelBuffer(pixelOp(jobs[i].Source, jobs[i].OpaqueBase));
+            }
+        }).ConfigureAwait(true);
+
+        for (var i = 0; i < jobs.Count; i++)
+        {
+            if (jobs[i].Erase)
+            {
+                jobs[i].Segment.Erase = results[i];
+            }
+            else
+            {
+                jobs[i].Segment.Pixels = results[i];
+            }
+        }
+
+        foreach (var t in doc.AllText.Select(h => h.Text))
+        {
+            var m = t.Transform;
+            m.Append(textMatrix);
+            t.Transform = m;
         }
 
         if (doc.Floating is not null)

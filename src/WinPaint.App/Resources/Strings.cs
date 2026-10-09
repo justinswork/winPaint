@@ -506,6 +506,9 @@ public static class Strings
     /// <summary>Resource string Layer_Panel.</summary>
     public static string Layer_Panel => ResourceManager.GetString("Layer_Panel", Culture) ?? "Layer_Panel";
 
+    /// <summary>Resource string Layer_TextCount.</summary>
+    public static string Layer_TextCount => ResourceManager.GetString("Layer_TextCount", Culture) ?? "Layer_TextCount";
+
     /// <summary>Resource string Layer_Visibility.</summary>
     public static string Layer_Visibility => ResourceManager.GetString("Layer_Visibility", Culture) ?? "Layer_Visibility";
 
@@ -568,6 +571,39 @@ public static class Strings
 
     /// <summary>Resource string Msg_WallpaperFailed.</summary>
     public static string Msg_WallpaperFailed => ResourceManager.GetString("Msg_WallpaperFailed", Culture) ?? "Msg_WallpaperFailed";
+
+    /// <summary>Resource string Name_Alpha.</summary>
+    public static string Name_Alpha => ResourceManager.GetString("Name_Alpha", Culture) ?? "Name_Alpha";
+
+    /// <summary>Resource string Name_Blue.</summary>
+    public static string Name_Blue => ResourceManager.GetString("Name_Blue", Culture) ?? "Name_Blue";
+
+    /// <summary>Resource string Name_Green.</summary>
+    public static string Name_Green => ResourceManager.GetString("Name_Green", Culture) ?? "Name_Green";
+
+    /// <summary>Resource string Name_Hex.</summary>
+    public static string Name_Hex => ResourceManager.GetString("Name_Hex", Culture) ?? "Name_Hex";
+
+    /// <summary>Resource string Name_Hue.</summary>
+    public static string Name_Hue => ResourceManager.GetString("Name_Hue", Culture) ?? "Name_Hue";
+
+    /// <summary>Resource string Name_Red.</summary>
+    public static string Name_Red => ResourceManager.GetString("Name_Red", Culture) ?? "Name_Red";
+
+    /// <summary>Resource string Name_Redo.</summary>
+    public static string Name_Redo => ResourceManager.GetString("Name_Redo", Culture) ?? "Name_Redo";
+
+    /// <summary>Resource string Name_Sat.</summary>
+    public static string Name_Sat => ResourceManager.GetString("Name_Sat", Culture) ?? "Name_Sat";
+
+    /// <summary>Resource string Name_SatVal.</summary>
+    public static string Name_SatVal => ResourceManager.GetString("Name_SatVal", Culture) ?? "Name_SatVal";
+
+    /// <summary>Resource string Name_Undo.</summary>
+    public static string Name_Undo => ResourceManager.GetString("Name_Undo", Culture) ?? "Name_Undo";
+
+    /// <summary>Resource string Name_Val.</summary>
+    public static string Name_Val => ResourceManager.GetString("Name_Val", Culture) ?? "Name_Val";
 
     /// <summary>Resource string No.</summary>
     public static string No => ResourceManager.GetString("No", Culture) ?? "No";
@@ -877,6 +913,45 @@ public static class Strings
 
     /// <summary>Resource string Theme_System.</summary>
     public static string Theme_System => ResourceManager.GetString("Theme_System", Culture) ?? "Theme_System";
+
+    /// <summary>Resource string Tip_Bold.</summary>
+    public static string Tip_Bold => ResourceManager.GetString("Tip_Bold", Culture) ?? "Tip_Bold";
+
+    /// <summary>Resource string Tip_BrushOptions.</summary>
+    public static string Tip_BrushOptions => ResourceManager.GetString("Tip_BrushOptions", Culture) ?? "Tip_BrushOptions";
+
+    /// <summary>Resource string Tip_Crop.</summary>
+    public static string Tip_Crop => ResourceManager.GetString("Tip_Crop", Culture) ?? "Tip_Crop";
+
+    /// <summary>Resource string Tip_Italic.</summary>
+    public static string Tip_Italic => ResourceManager.GetString("Tip_Italic", Culture) ?? "Tip_Italic";
+
+    /// <summary>Resource string Tip_OpacityPct.</summary>
+    public static string Tip_OpacityPct => ResourceManager.GetString("Tip_OpacityPct", Culture) ?? "Tip_OpacityPct";
+
+    /// <summary>Resource string Tip_Redo.</summary>
+    public static string Tip_Redo => ResourceManager.GetString("Tip_Redo", Culture) ?? "Tip_Redo";
+
+    /// <summary>Resource string Tip_Resize.</summary>
+    public static string Tip_Resize => ResourceManager.GetString("Tip_Resize", Culture) ?? "Tip_Resize";
+
+    /// <summary>Resource string Tip_SelectionOptions.</summary>
+    public static string Tip_SelectionOptions => ResourceManager.GetString("Tip_SelectionOptions", Culture) ?? "Tip_SelectionOptions";
+
+    /// <summary>Resource string Tip_Size.</summary>
+    public static string Tip_Size => ResourceManager.GetString("Tip_Size", Culture) ?? "Tip_Size";
+
+    /// <summary>Resource string Tip_SizePx.</summary>
+    public static string Tip_SizePx => ResourceManager.GetString("Tip_SizePx", Culture) ?? "Tip_SizePx";
+
+    /// <summary>Resource string Tip_Swap.</summary>
+    public static string Tip_Swap => ResourceManager.GetString("Tip_Swap", Culture) ?? "Tip_Swap";
+
+    /// <summary>Resource string Tip_Underline.</summary>
+    public static string Tip_Underline => ResourceManager.GetString("Tip_Underline", Culture) ?? "Tip_Underline";
+
+    /// <summary>Resource string Tip_Undo.</summary>
+    public static string Tip_Undo => ResourceManager.GetString("Tip_Undo", Culture) ?? "Tip_Undo";
 
     /// <summary>Resource string TitleFormat.</summary>
     public static string TitleFormat => ResourceManager.GetString("TitleFormat", Culture) ?? "TitleFormat";

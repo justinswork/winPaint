@@ -319,14 +319,6 @@ public sealed partial class MainViewModel
     [RelayCommand]
     private void DeleteText() => Text.Delete();
 
-    /// <summary>Text: opaque background.</summary>
-    [RelayCommand]
-    private void MakeTextOpaque() => TextOpaque = true;
-
-    /// <summary>Text: transparent background.</summary>
-    [RelayCommand]
-    private void MakeTextTransparent() => TextOpaque = false;
-
     /// <summary>Text: toggles bold (Ctrl+B).</summary>
     [RelayCommand]
     private void ToggleBold() => TextBold = !TextBold;

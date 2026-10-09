@@ -128,22 +128,30 @@ public sealed partial class CanvasView
                 HandleUp(P(0), button, mods);
                 return true;
             case "drag" when numbers.Count >= 4 && numbers.Count % 2 == 0:
-                HandleDown(P(0), button, mods, 1, space);
-                for (var i = 2; i < numbers.Count; i += 2)
+            {
+                // The whole path is mapped to screen positions up front (like a physical mouse drag), so panning
+                // during the drag does not feed back into the path. Long segments are interpolated.
+                var path = new List<Point>();
+                for (var i = 0; i < numbers.Count; i += 2)
                 {
-                    // Interpolate so long segments behave like a real, continuous mouse drag.
-                    var a = new Point(numbers[i - 2], numbers[i - 1]);
-                    var b = new Point(numbers[i], numbers[i + 1]);
-                    var steps = Math.Max(1, (int)((b - a).Length / 6));
+                    path.Add(P(i));
+                }
+
+                HandleDown(path[0], button, mods, 1, space);
+                for (var i = 1; i < path.Count; i++)
+                {
+                    var a = path[i - 1];
+                    var b = path[i];
+                    var steps = Math.Max(1, (int)((b - a).Length / 5));
                     for (var s = 1; s <= steps; s++)
                     {
-                        var q = a + ((b - a) * s / steps);
-                        HandleMove(_vt.CanvasToView(q), mods);
+                        HandleMove(a + ((b - a) * s / steps), mods);
                     }
                 }
 
-                HandleUp(P(numbers.Count - 2), button, mods);
+                HandleUp(path[^1], button, mods);
                 return true;
+            }
             case "hover" when numbers.Count >= 2:
                 HandleMove(P(0), mods);
                 return true;

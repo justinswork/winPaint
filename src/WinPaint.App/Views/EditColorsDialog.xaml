@@ -17,7 +17,7 @@
 
         <!-- Saturation (x) / value (y) square over the current hue -->
         <Grid x:Name="Square" Width="220" Height="220" Cursor="Cross" MouseLeftButtonDown="OnSquareDown" MouseMove="OnSquareMove" MouseLeftButtonUp="OnSquareUp"
-              AutomationProperties.Name="Saturation and value" AutomationProperties.AutomationId="ColorSquare">
+              AutomationProperties.Name="{x:Static res:Strings.Name_SatVal}" AutomationProperties.AutomationId="ColorSquare">
             <Rectangle Fill="{Binding HueColor, Converter={StaticResource AppColorBrush}}" RadiusX="4" RadiusY="4" />
             <Rectangle RadiusX="4" RadiusY="4">
                 <Rectangle.Fill>
@@ -42,7 +42,7 @@
 
         <!-- Hue bar -->
         <Grid x:Name="HueBar" Grid.Column="1" Width="22" Height="220" Margin="10,0" Cursor="Hand" MouseLeftButtonDown="OnHueDown" MouseMove="OnHueMove" MouseLeftButtonUp="OnHueUp"
-              AutomationProperties.Name="Hue" AutomationProperties.AutomationId="HueBar">
+              AutomationProperties.Name="{x:Static res:Strings.Name_Hue}" AutomationProperties.AutomationId="HueBar">
             <Rectangle RadiusX="4" RadiusY="4">
                 <Rectangle.Fill>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
@@ -72,21 +72,21 @@
                     <RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition />
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" Content="{x:Static res:Strings.Dlg_Hex}" Target="{Binding ElementName=HexBox}" VerticalAlignment="Center" />
-                <TextBox x:Name="HexBox" Grid.Row="0" Grid.Column="1" Text="{Binding Hex, UpdateSourceTrigger=PropertyChanged}" Margin="0,2" AutomationProperties.Name="Hex" AutomationProperties.AutomationId="HexBox" />
+                <TextBox x:Name="HexBox" Grid.Row="0" Grid.Column="1" Text="{Binding Hex, UpdateSourceTrigger=PropertyChanged}" Margin="0,2" AutomationProperties.Name="{x:Static res:Strings.Name_Hex}" AutomationProperties.AutomationId="HexBox" />
                 <Label Grid.Row="1" Content="{x:Static res:Strings.Dlg_Red}" Target="{Binding ElementName=RBox}" VerticalAlignment="Center" />
-                <TextBox x:Name="RBox" Grid.Row="1" Grid.Column="1" Text="{Binding Red, UpdateSourceTrigger=PropertyChanged}" Margin="0,2" AutomationProperties.Name="Red" AutomationProperties.AutomationId="RedBox" />
+                <TextBox x:Name="RBox" Grid.Row="1" Grid.Column="1" Text="{Binding Red, UpdateSourceTrigger=PropertyChanged}" Margin="0,2" AutomationProperties.Name="{x:Static res:Strings.Name_Red}" AutomationProperties.AutomationId="RedBox" />
                 <Label Grid.Row="2" Content="{x:Static res:Strings.Dlg_Green}" Target="{Binding ElementName=GBox}" VerticalAlignment="Center" />
-                <TextBox x:Name="GBox" Grid.Row="2" Grid.Column="1" Text="{Binding Green, UpdateSourceTrigger=PropertyChanged}" Margin="0,2" AutomationProperties.Name="Green" AutomationProperties.AutomationId="GreenBox" />
+                <TextBox x:Name="GBox" Grid.Row="2" Grid.Column="1" Text="{Binding Green, UpdateSourceTrigger=PropertyChanged}" Margin="0,2" AutomationProperties.Name="{x:Static res:Strings.Name_Green}" AutomationProperties.AutomationId="GreenBox" />
                 <Label Grid.Row="3" Content="{x:Static res:Strings.Dlg_Blue}" Target="{Binding ElementName=BBox}" VerticalAlignment="Center" />
-                <TextBox x:Name="BBox" Grid.Row="3" Grid.Column="1" Text="{Binding Blue, UpdateSourceTrigger=PropertyChanged}" Margin="0,2" AutomationProperties.Name="Blue" AutomationProperties.AutomationId="BlueBox" />
+                <TextBox x:Name="BBox" Grid.Row="3" Grid.Column="1" Text="{Binding Blue, UpdateSourceTrigger=PropertyChanged}" Margin="0,2" AutomationProperties.Name="{x:Static res:Strings.Name_Blue}" AutomationProperties.AutomationId="BlueBox" />
                 <Label Grid.Row="4" Content="{x:Static res:Strings.Dlg_Hue}" Target="{Binding ElementName=HBox}" VerticalAlignment="Center" />
-                <TextBox x:Name="HBox" Grid.Row="4" Grid.Column="1" Text="{Binding Hue, UpdateSourceTrigger=LostFocus}" Margin="0,2" AutomationProperties.Name="Hue" AutomationProperties.AutomationId="HueBox" />
+                <TextBox x:Name="HBox" Grid.Row="4" Grid.Column="1" Text="{Binding Hue, UpdateSourceTrigger=LostFocus}" Margin="0,2" AutomationProperties.Name="{x:Static res:Strings.Name_Hue}" AutomationProperties.AutomationId="HueBox" />
                 <Label Grid.Row="5" Content="{x:Static res:Strings.Dlg_Sat}" Target="{Binding ElementName=SBox}" VerticalAlignment="Center" />
-                <TextBox x:Name="SBox" Grid.Row="5" Grid.Column="1" Text="{Binding Saturation, UpdateSourceTrigger=LostFocus}" Margin="0,2" AutomationProperties.Name="Saturation" AutomationProperties.AutomationId="SatBox" />
+                <TextBox x:Name="SBox" Grid.Row="5" Grid.Column="1" Text="{Binding Saturation, UpdateSourceTrigger=LostFocus}" Margin="0,2" AutomationProperties.Name="{x:Static res:Strings.Name_Sat}" AutomationProperties.AutomationId="SatBox" />
                 <Label Grid.Row="6" Content="{x:Static res:Strings.Dlg_Val}" Target="{Binding ElementName=VBox}" VerticalAlignment="Center" />
-                <TextBox x:Name="VBox" Grid.Row="6" Grid.Column="1" Text="{Binding Value, UpdateSourceTrigger=LostFocus}" Margin="0,2" AutomationProperties.Name="Value" AutomationProperties.AutomationId="ValBox" />
+                <TextBox x:Name="VBox" Grid.Row="6" Grid.Column="1" Text="{Binding Value, UpdateSourceTrigger=LostFocus}" Margin="0,2" AutomationProperties.Name="{x:Static res:Strings.Name_Val}" AutomationProperties.AutomationId="ValBox" />
                 <Label Grid.Row="7" Content="{x:Static res:Strings.Dlg_Alpha}" Target="{Binding ElementName=ABox}" VerticalAlignment="Center" />
-                <TextBox x:Name="ABox" Grid.Row="7" Grid.Column="1" Text="{Binding Alpha, UpdateSourceTrigger=PropertyChanged}" Margin="0,2" AutomationProperties.Name="Alpha" AutomationProperties.AutomationId="AlphaBox" />
+                <TextBox x:Name="ABox" Grid.Row="7" Grid.Column="1" Text="{Binding Alpha, UpdateSourceTrigger=PropertyChanged}" Margin="0,2" AutomationProperties.Name="{x:Static res:Strings.Name_Alpha}" AutomationProperties.AutomationId="AlphaBox" />
             </Grid>
         </StackPanel>
 

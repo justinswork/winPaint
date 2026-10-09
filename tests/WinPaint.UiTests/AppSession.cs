@@ -30,6 +30,15 @@ public sealed class AppSession : IDisposable
         WaitUntil(() => State("seq") is not null, TimeSpan.FromSeconds(10));
     }
 
+    /// <summary>Settings file used by this session.</summary>
+    public string SettingsPath => _settingsPath;
+
+    /// <summary>Keeps the settings folder on dispose (to relaunch with the same settings).</summary>
+    public bool KeepSettings { get; set; }
+
+    /// <summary>Folder where crash recovery copies are written for this session.</summary>
+    public string RecoveryDir => Path.Combine(Path.GetDirectoryName(_settingsPath)!, "recovery");
+
     /// <summary>The main window.</summary>
     public Window MainWindow { get; }
 
@@ -75,10 +84,15 @@ public sealed class AppSession : IDisposable
     }
 
     /// <summary>Launches winPaint with isolated settings.</summary>
-    public static AppSession Launch(string? file = null, string theme = "Light", int width = 1280, int height = 820, Dictionary<string, object>? extraSettings = null)
+    public static AppSession Launch(string? file = null, string theme = "Light", int width = 1280, int height = 820, Dictionary<string, object>? extraSettings = null, string? reuseSettings = null)
     {
-        var settingsPath = Path.Combine(Path.GetTempPath(), "winPaintUiTests", Guid.NewGuid().ToString("N"), "settings.json");
+        var settingsPath = reuseSettings ?? Path.Combine(Path.GetTempPath(), "winPaintUiTests", Guid.NewGuid().ToString("N"), "settings.json");
         Directory.CreateDirectory(Path.GetDirectoryName(settingsPath)!);
+        if (reuseSettings is not null)
+        {
+            return Start(file, settingsPath);
+        }
+
         var settings = new Dictionary<string, object> { ["Theme"] = theme, ["WindowWidth"] = width, ["WindowHeight"] = height, ["WindowLeft"] = 40, ["WindowTop"] = 40 };
         foreach (var kv in extraSettings ?? [])
         {
@@ -86,6 +100,11 @@ public sealed class AppSession : IDisposable
         }
 
         File.WriteAllText(settingsPath, JsonSerializer.Serialize(settings));
+        return Start(file, settingsPath);
+    }
+
+    private static AppSession Start(string? file, string settingsPath)
+    {
         var psi = new ProcessStartInfo(ExePath) { UseShellExecute = false };
         if (file is not null)
         {
@@ -93,6 +112,7 @@ public sealed class AppSession : IDisposable
         }
 
         psi.Environment["WINPAINT_SETTINGS"] = settingsPath;
+        psi.Environment["WINPAINT_RECOVERY_DIR"] = Path.Combine(Path.GetDirectoryName(settingsPath)!, "recovery");
         return new AppSession(Application.Launch(psi), settingsPath);
     }
 
@@ -217,6 +237,10 @@ public sealed class AppSession : IDisposable
         {
             e.Patterns.Invoke.Pattern.Invoke();
         }
+        else if (e.Patterns.ExpandCollapse.IsSupported)
+        {
+            e.Patterns.ExpandCollapse.Pattern.Expand();
+        }
         else
         {
             e.Patterns.Toggle.Pattern.Toggle();
@@ -294,12 +318,15 @@ public sealed class AppSession : IDisposable
 
         _app.Dispose();
         _automation.Dispose();
-        try
+        if (!KeepSettings)
         {
-            Directory.Delete(Path.GetDirectoryName(_settingsPath)!, true);
-        }
-        catch (IOException)
-        {
+            try
+            {
+                Directory.Delete(Path.GetDirectoryName(_settingsPath)!, true);
+            }
+            catch (IOException)
+            {
+            }
         }
     }
 

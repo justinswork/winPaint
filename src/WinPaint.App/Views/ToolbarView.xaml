@@ -79,7 +79,7 @@
                     <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Select}" Width="22" Height="22" />
                 </Button>
                 <Button Style="{StaticResource ToolButton}" ctl:DropDown.OpensMenu="True" ContextMenu="{StaticResource SelectionDropMenu}" MinWidth="16" Padding="0"
-                        ToolTip="{x:Static res:Strings.Group_Selection}" AutomationProperties.Name="Selection options" AutomationProperties.AutomationId="SelectionDropDown">
+                        ToolTip="{x:Static res:Strings.Group_Selection}" AutomationProperties.Name="{x:Static res:Strings.Tip_SelectionOptions}" AutomationProperties.AutomationId="SelectionDropDown">
                     <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.ChevronDown}" Width="9" Height="9" />
                 </Button>
             </StackPanel>
@@ -89,10 +89,10 @@
         <!-- Image -->
         <ctl:ToolbarGroup Header="{x:Static res:Strings.Group_Image}" Icon="{StaticResource Icon.Crop}" Priority="2" AutomationProperties.AutomationId="GroupImage">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <Button Style="{StaticResource ToolButton}" Command="{Binding CropCommand}" ToolTip="Crop (Ctrl+Shift+X)" AutomationProperties.Name="{x:Static res:Strings.Img_Crop}" AutomationProperties.AutomationId="CropButton">
+                <Button Style="{StaticResource ToolButton}" Command="{Binding CropCommand}" ToolTip="{x:Static res:Strings.Tip_Crop}" AutomationProperties.Name="{x:Static res:Strings.Img_Crop}" AutomationProperties.AutomationId="CropButton">
                     <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Crop}" />
                 </Button>
-                <Button Style="{StaticResource ToolButton}" Command="{Binding ResizeSkewCommand}" ToolTip="Resize and skew (Ctrl+W)" AutomationProperties.Name="{x:Static res:Strings.Img_Resize}" AutomationProperties.AutomationId="ResizeButton">
+                <Button Style="{StaticResource ToolButton}" Command="{Binding ResizeSkewCommand}" ToolTip="{x:Static res:Strings.Tip_Resize}" AutomationProperties.Name="{x:Static res:Strings.Img_Resize}" AutomationProperties.AutomationId="ResizeButton">
                     <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Resize}" />
                 </Button>
                 <Button Style="{StaticResource ToolButton}" ctl:DropDown.OpensMenu="True" ContextMenu="{StaticResource RotateMenu}" ToolTip="{x:Static res:Strings.Img_Rotate}" AutomationProperties.Name="{x:Static res:Strings.Img_Rotate}" AutomationProperties.AutomationId="RotateButton">
@@ -140,7 +140,7 @@
                         ToolTip="{Binding BrushKind, Converter={StaticResource EnumName}, ConverterParameter=Brush}" AutomationProperties.Name="{x:Static res:Strings.Group_Brushes}" AutomationProperties.AutomationId="ToolBrush" MinWidth="40" MinHeight="40">
                     <Image Source="{Binding BrushKind, Converter={StaticResource BrushPreview}}" Width="40" Height="20" />
                 </Button>
-                <ToggleButton x:Name="BrushDrop" Style="{StaticResource ToolToggle}" MinWidth="16" Padding="0" ToolTip="{x:Static res:Strings.Group_Brushes}" AutomationProperties.Name="Brush options" AutomationProperties.AutomationId="BrushDropDown">
+                <ToggleButton x:Name="BrushDrop" Style="{StaticResource ToolToggle}" MinWidth="16" Padding="0" ToolTip="{x:Static res:Strings.Group_Brushes}" AutomationProperties.Name="{x:Static res:Strings.Tip_BrushOptions}" AutomationProperties.AutomationId="BrushDropDown">
                     <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.ChevronDown}" Width="9" Height="9" />
                 </ToggleButton>
                 <Popup IsOpen="{Binding IsChecked, ElementName=BrushDrop}" StaysOpen="False" PlacementTarget="{Binding ElementName=BrushDrop}" Placement="Bottom" AllowsTransparency="True">
@@ -212,7 +212,7 @@
         <!-- Size / opacity -->
         <ctl:ToolbarGroup Header="{x:Static res:Strings.Group_Size}" Icon="{StaticResource Icon.Size}" Priority="1" AutomationProperties.AutomationId="GroupSize">
             <Grid VerticalAlignment="Center">
-                <ToggleButton x:Name="SizeDrop" Style="{StaticResource ToolToggle}" ToolTip="Size (Ctrl+Plus / Ctrl+Minus)" AutomationProperties.Name="{x:Static res:Strings.Size_Size}" AutomationProperties.AutomationId="SizeButton" MinWidth="44" MinHeight="40">
+                <ToggleButton x:Name="SizeDrop" Style="{StaticResource ToolToggle}" ToolTip="{x:Static res:Strings.Tip_Size}" AutomationProperties.Name="{x:Static res:Strings.Size_Size}" AutomationProperties.AutomationId="SizeButton" MinWidth="44" MinHeight="40">
                     <StackPanel Orientation="Horizontal">
                         <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Size}" Width="20" Height="20" />
                         <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.ChevronDown}" Width="8" Height="8" Margin="4,0,0,0" />
@@ -229,7 +229,7 @@
                                 </Grid.ColumnDefinitions>
                                 <Slider Minimum="1" Maximum="100" IsSnapToTickEnabled="True" TickFrequency="1" Value="{Binding ToolSize}" IsEnabled="{Binding ToolHasSize}" VerticalAlignment="Center"
                                         AutomationProperties.Name="{x:Static res:Strings.Size_Size}" AutomationProperties.AutomationId="SizeSlider" />
-                                <TextBox Grid.Column="1" Margin="6,0,0,0" Text="{Binding ToolSize, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding ToolHasSize}" AutomationProperties.Name="Size in pixels" AutomationProperties.AutomationId="SizeBox" />
+                                <TextBox Grid.Column="1" Margin="6,0,0,0" Text="{Binding ToolSize, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding ToolHasSize}" AutomationProperties.Name="{x:Static res:Strings.Tip_SizePx}" AutomationProperties.AutomationId="SizeBox" />
                             </Grid>
                             <Border Height="44" Margin="0,8,0,0" CornerRadius="4" Background="{DynamicResource PanelBackgroundBrush}">
                                 <Ellipse Width="{Binding ToolSize, Converter={StaticResource SizePreview}}" Height="{Binding ToolSize, Converter={StaticResource SizePreview}}"
@@ -243,7 +243,7 @@
                                 </Grid.ColumnDefinitions>
                                 <Slider Minimum="1" Maximum="100" IsSnapToTickEnabled="True" TickFrequency="1" Value="{Binding OpacityPercent}" VerticalAlignment="Center"
                                         AutomationProperties.Name="{x:Static res:Strings.Size_Opacity}" AutomationProperties.AutomationId="OpacitySlider" />
-                                <TextBox Grid.Column="1" Margin="6,0,0,0" Text="{Binding OpacityPercent, StringFormat={}{0:0}, UpdateSourceTrigger=LostFocus}" AutomationProperties.Name="Opacity percent" AutomationProperties.AutomationId="OpacityBox" />
+                                <TextBox Grid.Column="1" Margin="6,0,0,0" Text="{Binding OpacityPercent, StringFormat={}{0:0}, UpdateSourceTrigger=LostFocus}" AutomationProperties.Name="{x:Static res:Strings.Tip_OpacityPct}" AutomationProperties.AutomationId="OpacityBox" />
                             </Grid>
                         </StackPanel>
                     </Border>
@@ -263,7 +263,7 @@
                         ToolTip="{x:Static res:Strings.Color_Color2}" AutomationProperties.Name="{x:Static res:Strings.Color_Color2}" AutomationProperties.AutomationId="Color2Button" MinWidth="44">
                     <Ellipse Width="30" Height="30" Fill="{Binding SecondaryColor, Converter={StaticResource ColorBrush}}" Stroke="{DynamicResource SwatchBorderBrush}" />
                 </Button>
-                <Button Style="{StaticResource ToolButton}" Command="{Binding SwapColorsCommand}" ToolTip="Swap colors (X)" AutomationProperties.Name="{x:Static res:Strings.Color_Swap}" AutomationProperties.AutomationId="SwapColorsButton" MinWidth="24" Padding="2">
+                <Button Style="{StaticResource ToolButton}" Command="{Binding SwapColorsCommand}" ToolTip="{x:Static res:Strings.Tip_Swap}" AutomationProperties.Name="{x:Static res:Strings.Color_Swap}" AutomationProperties.AutomationId="SwapColorsButton" MinWidth="24" Padding="2">
                     <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Swap}" Width="14" Height="14" />
                 </Button>
                 <StackPanel Margin="6,0,0,0" VerticalAlignment="Center">

@@ -135,7 +135,7 @@ public sealed partial class SelectionTool
 
         var center = new Point(_bounds.X + (_bounds.Width / 2), _bounds.Y + (_bounds.Height / 2));
         _sourceOriginal = Transforms.Apply(_sourceOriginal!, t);
-        _source = Transforms.Apply(_source!, t);
+        _source = Host.Settings.TransparentSelection ? SelectionOperations.KeyOut(_sourceOriginal, Host.Settings.Secondary) : _sourceOriginal;
         var (w, h) = t is OrthoTransform.RotateLeft or OrthoTransform.RotateRight ? (_bounds.Height, _bounds.Width) : (_bounds.Width, _bounds.Height);
         _bounds = new Rect(Math.Round(center.X - (w / 2)), Math.Round(center.Y - (h / 2)), w, h);
         UpdateFloating();
@@ -172,9 +172,9 @@ public sealed partial class SelectionTool
             return false;
         }
 
+        // _source may be the same buffer as _sourceOriginal; invert the original once and re-derive the shown pixels.
         Transforms.Invert(_sourceOriginal!);
-        Transforms.Invert(_source!);
-        UpdateFloating();
+        RefreshTransparency();
         return true;
     }
 

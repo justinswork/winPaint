@@ -326,4 +326,29 @@ Do you want to save a recovery copy of your image (PNG) first?</value></data>
   <data name="Sc_NewLine" xml:space="preserve"><value>New line (text editing)</value></data>
   <data name="Sc_TabNav" xml:space="preserve"><value>Move between toolbar controls</value></data>
   <data name="Sc_Help" xml:space="preserve"><value>Keyboard shortcuts</value></data>
+  <data name="Tip_SelectionOptions" xml:space="preserve"><value>Selection options</value></data>
+  <data name="Tip_Crop" xml:space="preserve"><value>Crop (Ctrl+Shift+X)</value></data>
+  <data name="Tip_Resize" xml:space="preserve"><value>Resize and skew (Ctrl+W)</value></data>
+  <data name="Tip_BrushOptions" xml:space="preserve"><value>Brush options</value></data>
+  <data name="Tip_Size" xml:space="preserve"><value>Size (Ctrl+Plus / Ctrl+Minus)</value></data>
+  <data name="Tip_SizePx" xml:space="preserve"><value>Size in pixels</value></data>
+  <data name="Tip_OpacityPct" xml:space="preserve"><value>Opacity percent</value></data>
+  <data name="Tip_Swap" xml:space="preserve"><value>Swap colors (X)</value></data>
+  <data name="Tip_Undo" xml:space="preserve"><value>Undo (Ctrl+Z)</value></data>
+  <data name="Tip_Redo" xml:space="preserve"><value>Redo (Ctrl+Y)</value></data>
+  <data name="Name_Undo" xml:space="preserve"><value>Undo</value></data>
+  <data name="Name_Redo" xml:space="preserve"><value>Redo</value></data>
+  <data name="Tip_Bold" xml:space="preserve"><value>Bold (Ctrl+B)</value></data>
+  <data name="Tip_Italic" xml:space="preserve"><value>Italic (Ctrl+I)</value></data>
+  <data name="Tip_Underline" xml:space="preserve"><value>Underline (Ctrl+U)</value></data>
+  <data name="Layer_TextCount" xml:space="preserve"><value>Text objects: {0}</value></data>
+  <data name="Name_SatVal" xml:space="preserve"><value>Saturation and value</value></data>
+  <data name="Name_Hue" xml:space="preserve"><value>Hue</value></data>
+  <data name="Name_Hex" xml:space="preserve"><value>Hex</value></data>
+  <data name="Name_Red" xml:space="preserve"><value>Red</value></data>
+  <data name="Name_Green" xml:space="preserve"><value>Green</value></data>
+  <data name="Name_Blue" xml:space="preserve"><value>Blue</value></data>
+  <data name="Name_Sat" xml:space="preserve"><value>Saturation</value></data>
+  <data name="Name_Val" xml:space="preserve"><value>Value</value></data>
+  <data name="Name_Alpha" xml:space="preserve"><value>Alpha</value></data>
 </root>

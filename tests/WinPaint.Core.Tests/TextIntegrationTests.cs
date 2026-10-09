@@ -350,6 +350,7 @@ public class TextIntegrationTests
 
         host.CommitTextEdit();
         var avg = sw.Elapsed.TotalMilliseconds / keystrokes;
+        RecordPerf("T-PERF-TEXT", $"3840x2160, 30 text objects + 30 strokes, editing the bottom-most text: {avg:F2} ms per keystroke (average of {keystrokes})");
         Assert.True(avg < 16 * 3, $"average keystroke {avg:F1} ms");
     });
 }

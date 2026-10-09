@@ -190,8 +190,32 @@ public sealed partial class MainViewModel
         }
     }
 
+    /// <summary>
+    /// Runs a whole-image operation. Above 4K the pixel work runs on a background task with a busy cursor and the
+    /// window stays responsive (input to the document is blocked until it finishes).
+    /// </summary>
+    internal async Task RunImageOperationAsync(Func<ImageOperations.Offload, Task> operation)
+    {
+        ArgumentNullException.ThrowIfNull(operation);
+        if ((long)Document.Width * Document.Height <= 3840L * 2160)
+        {
+            await operation(ImageOperations.Inline);
+            return;
+        }
+
+        IsBusy = true;
+        try
+        {
+            await operation(work => Task.Run(work));
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
     [RelayCommand]
-    private void Rotate(OrthoTransform t)
+    private async Task RotateAsync(OrthoTransform t)
     {
         Text.Commit();
         if (ActiveSelection?.HasSelection == true)
@@ -201,14 +225,15 @@ public sealed partial class MainViewModel
         else
         {
             _activeTool.CommitPending();
-            ImageOperations.Orthogonal(Document, t);
+            await RunImageOperationAsync(o => ImageOperations.OrthogonalAsync(Document, t, o));
         }
 
+        UpdateImageSizeText();
         ToolStateChanged();
     }
 
     [RelayCommand]
-    private void ResizeSkew()
+    private async Task ResizeSkewAsync()
     {
         Text.Commit();
         var sel = ActiveSelection?.HasSelection == true ? ActiveSelection : null;
@@ -232,12 +257,12 @@ public sealed partial class MainViewModel
         {
             if (r.Width != Document.Width || r.Height != Document.Height)
             {
-                ImageOperations.Resize(Document, r.Width, r.Height);
+                await RunImageOperationAsync(o => ImageOperations.ResizeAsync(Document, r.Width, r.Height, o));
             }
 
             if (r.SkewHorizontal != 0 || r.SkewVertical != 0)
             {
-                ImageOperations.Skew(Document, r.SkewHorizontal, r.SkewVertical, SecondaryColor);
+                await RunImageOperationAsync(o => ImageOperations.SkewAsync(Document, r.SkewHorizontal, r.SkewVertical, SecondaryColor, o));
             }
         }
 
@@ -246,7 +271,7 @@ public sealed partial class MainViewModel
     }
 
     [RelayCommand]
-    private void InvertColors()
+    private async Task InvertColorsAsync()
     {
         Text.Commit();
         if (ActiveSelection?.HasSelection == true)
@@ -256,7 +281,7 @@ public sealed partial class MainViewModel
         else
         {
             _activeTool.CommitPending();
-            ImageOperations.InvertColors(Document);
+            await RunImageOperationAsync(o => ImageOperations.InvertColorsAsync(Document, o));
         }
 
         ToolStateChanged();

@@ -308,7 +308,7 @@ public sealed partial class MainViewModel
     }
 
     [RelayCommand]
-    private void ImageProperties()
+    private async Task ImagePropertiesAsync()
     {
         PrepareForCommand();
         long? size = FilePath is not null && File.Exists(FilePath) ? new FileInfo(FilePath).Length : null;
@@ -325,7 +325,7 @@ public sealed partial class MainViewModel
 
         if (r.BlackAndWhite)
         {
-            ImageOperations.BlackAndWhite(Document);
+            await RunImageOperationAsync(o => ImageOperations.BlackAndWhiteAsync(Document, o));
         }
 
         UpdateImageSizeText();
@@ -351,7 +351,8 @@ public sealed partial class MainViewModel
     /// <summary>Flattened PNG recovery copy (used by the crash handler).</summary>
     public string? SaveRecoveryCopy()
     {
-        var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "winPaint Recovery");
+        var dir = Environment.GetEnvironmentVariable("WINPAINT_RECOVERY_DIR")
+            ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "winPaint Recovery");
         Directory.CreateDirectory(dir);
         var path = Path.Combine(dir, $"recovery-{DateTime.Now:yyyyMMdd-HHmmss}.png");
         ImageCodec.Encode(Document.Flatten(), path, ImageFormat.Png);

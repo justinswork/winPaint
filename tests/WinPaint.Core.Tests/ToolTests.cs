@@ -52,6 +52,7 @@ public class ToolTests
         var (s4, _) = FloodFill.Region(big.Pixels, 4000, 2000, 0, 0);
         sw.Stop();
         Assert.True(s4.Count > 1000);
+        RecordPerf("A-01-fill", $"8 MP (4000x2000) scanline flood fill: {sw.Elapsed.TotalMilliseconds:F1} ms");
         Assert.True(sw.ElapsedMilliseconds < 150, $"fill took {sw.ElapsedMilliseconds} ms");
     }
 
@@ -318,6 +319,25 @@ public class ToolTests
         Assert.Equal(red, doc.CompositePixel(15, 15));
         Assert.Equal(red, doc.CompositePixel(55, 55));
         Assert.Equal(ColorUtil.White, doc.CompositePixel(35, 35));
+    });
+
+    [Fact]
+    public void SelectionOnlyOperationsInvertRotate() => Sta(() =>
+    {
+        var doc = new PaintDocument(100, 100);
+        var host = new FakeHost(doc);
+        var sel = new SelectionTool(host, false);
+        FakeHost.Drag(sel, PointerButton.Left, new Point(10, 10), new Point(30, 20));
+        Assert.True(sel.InvertSelectionColors());
+        sel.CommitPending();
+        Assert.Equal(ColorUtil.Black, doc.CompositePixel(15, 15));
+        Assert.Equal(ColorUtil.White, doc.CompositePixel(50, 50));
+
+        FakeHost.Drag(sel, PointerButton.Left, new Point(10, 10), new Point(30, 20));
+        Assert.True(sel.TransformSelection(OrthoTransform.RotateRight));
+        Assert.Equal(new PixelRect(15, 5, 10, 20), sel.SelectionBounds);
+        sel.CommitPending();
+        Assert.Equal(ColorUtil.Black, doc.CompositePixel(20, 22));
     });
 
     [Fact]

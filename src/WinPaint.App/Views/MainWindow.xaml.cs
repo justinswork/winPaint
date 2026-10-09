@@ -33,6 +33,8 @@ public partial class MainWindow : Window, IViewService
                 src.AddHook(WndProc);
             }
         };
+        ContentRendered += (_, _) =>
+            StartupTime = DateTime.Now - System.Diagnostics.Process.GetCurrentProcess().StartTime;
         Drop += OnDrop;
         DragOver += (_, e) =>
         {
@@ -43,6 +45,9 @@ public partial class MainWindow : Window, IViewService
 
     /// <inheritdoc/>
     public PixelRect VisibleCanvasRect => Canvas.VisibleCanvasRect;
+
+    /// <summary>Time from process start to the first rendered frame (cold-start measurement).</summary>
+    public TimeSpan? StartupTime { get; private set; }
 
     /// <summary>Connects the view model and restores the window placement.</summary>
     public void Attach(MainViewModel vm, SettingsService settings)
@@ -68,6 +73,9 @@ public partial class MainWindow : Window, IViewService
             if (e.PropertyName == nameof(MainViewModel.IsBusy))
             {
                 Mouse.OverrideCursor = vm.IsBusy ? Cursors.Wait : null;
+
+                // Keep the window responsive (it repaints and can be moved) but block edits while the document is busy.
+                RootGrid.IsHitTestVisible = !vm.IsBusy;
             }
             else if (e.PropertyName == nameof(MainViewModel.RecentFiles))
             {
@@ -200,6 +208,12 @@ public partial class MainWindow : Window, IViewService
     internal bool HandleShortcut(Key key, ModifierKeys mods)
     {
         var vm = _vm!;
+        if (vm.IsBusy)
+        {
+            // A long operation is running in the background; ignore shortcuts until it completes.
+            return true;
+        }
+
         var ctrl = (mods & ModifierKeys.Control) != 0;
         var shift = (mods & ModifierKeys.Shift) != 0;
         var typing = Keyboard.FocusedElement is TextBoxBase;

@@ -35,12 +35,7 @@ public static partial class Wallpaper
                     return false;
                 }
 
-                var (wallpaperStyle, tile) = style switch
-                {
-                    WallpaperStyle.Tile => ("0", "1"),
-                    WallpaperStyle.Center => ("0", "0"),
-                    _ => ("10", "0"),
-                };
+                var (wallpaperStyle, tile) = RegistryValues(style);
                 key.SetValue("WallpaperStyle", wallpaperStyle);
                 key.SetValue("TileWallpaper", tile);
             }
@@ -56,6 +51,14 @@ public static partial class Wallpaper
             return false;
         }
     }
+
+    /// <summary>Registry values (WallpaperStyle, TileWallpaper) for a placement.</summary>
+    public static (string WallpaperStyle, string TileWallpaper) RegistryValues(WallpaperStyle style) => style switch
+    {
+        WallpaperStyle.Tile => ("0", "1"),
+        WallpaperStyle.Center => ("0", "0"),
+        _ => ("10", "0"),
+    };
 
     [LibraryImport("user32.dll", EntryPoint = "SystemParametersInfoW", StringMarshalling = StringMarshalling.Utf16, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
