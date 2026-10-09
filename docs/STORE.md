@@ -44,8 +44,8 @@ Partner Center runs the same checks during certification, so this step is option
 ## 4. Create the submission
 - **Packages:** upload the `.msixupload`.
 - **Pricing and availability:** your choice (MarkdownStudio's settings are a good default).
-- **Properties:** category **Photo & video** (subcategory none). It does not access/collect personal info → the privacy
-  policy URL is optional, but you can link `PRIVACY.md` (e.g. its GitHub URL).
+- **Properties:** category **Photo & video** (subcategory none). Privacy policy URL:
+  <https://github.com/justinswork/winPaint/blob/develop/PRIVACY.md> (same approach as MarkdownStudio).
 - **Age ratings (IARC questionnaire):** utility/productivity app; no violence, sexual content, gambling, drugs,
   user-to-user communication, sharing of location or personal info, purchases or ads → expected rating **3+ / Everyone**.
 - **Store listing (English):** text below; screenshots in `artifacts/store/` (1904×1041, above the 1366×768 minimum);
