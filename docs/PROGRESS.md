@@ -1,16 +1,15 @@
 # winPaint — Progress
 
 ## Current state
-- **Milestone:** M11 — final audit
-- **Working on:** running the full UI suite on the latest build; final report
-- **Next steps:** 1) full `dotnet test` run  2) fill FINAL_REPORT.md numbers  3) final commit + push
-- **Half-finished work:** none uncommitted
-- **Known failing tests:** none known (Core 79/79; UI 19/19 on the previous build, new MoreUiTests pending)
-- **Environment note:** the workstation is locked (LogonUI running); UI tests drive the app via UI Automation and the
-  canvas automation interface, screenshots are rendered in-process (DECISIONS.md). The system clipboard can't be opened
-  in this session; winPaint falls back to an in-app clipboard (DECISIONS.md).
+- **Milestone:** M11 — final audit complete (Definition of Done met; see docs/FINAL_REPORT.md)
+- **Working on:** nothing; build is complete
+- **Next steps:** optional P2 items only (F-FILE-14 scanner/camera, F-FILE-15 share, F-COL-04 screen eyedropper)
+- **Half-finished work:** none
+- **Known failing tests:** none. Final run (Release, commit e1bc9c4): build 0 warnings/0 errors; Core 79/79; UI 26/26.
+- **Environment note:** the workstation was locked (LogonUI running); UI tests drive the app via UI Automation and the
+  canvas automation interface, screenshots are rendered in-process, and the system clipboard falls back to an in-app
+  clipboard (DECISIONS.md).
 - **Push status:** ok (push via Git Bash)
-
 Legend: `[ ]` open, `[~]` in progress, `[x]` done and verified. Evidence: Core test (`tests/WinPaint.Core.Tests`),
 UI test (`tests/WinPaint.UiTests`), screenshot (`artifacts/screenshots/…png`).
 

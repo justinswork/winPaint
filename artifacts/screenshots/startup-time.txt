@@ -1,2 +1,2 @@
-Process start to first rendered frame: 661 ms
-Launch to UI Automation ready (includes UIA attach): 750 ms
+Process start to first rendered frame: 653 ms
+Launch to UI Automation ready (includes UIA attach): 744 ms

@@ -1,1 +1,1 @@
-3840x2160 brush stroke (size 20): 2.51 ms per pointer move including compositing the dirty rectangle
+3840x2160 brush stroke (size 20): 2.40 ms per pointer move including compositing the dirty rectangle

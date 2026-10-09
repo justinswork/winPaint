@@ -1,1 +1,1 @@
-8 MP (4000x2000) scanline flood fill: 39.6 ms
+8 MP (4000x2000) scanline flood fill: 40.9 ms
