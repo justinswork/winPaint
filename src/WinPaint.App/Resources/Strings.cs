@@ -779,6 +779,9 @@ public static class Strings
     /// <summary>Resource string Size_Size.</summary>
     public static string Size_Size => ResourceManager.GetString("Size_Size", Culture) ?? "Size_Size";
 
+    /// <summary>Resource string Status_ClipboardFallback.</summary>
+    public static string Status_ClipboardFallback => ResourceManager.GetString("Status_ClipboardFallback", Culture) ?? "Status_ClipboardFallback";
+
     /// <summary>Resource string Status_EditingText.</summary>
     public static string Status_EditingText => ResourceManager.GetString("Status_EditingText", Culture) ?? "Status_EditingText";
 

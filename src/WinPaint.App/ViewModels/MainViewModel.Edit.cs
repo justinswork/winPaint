@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using CommunityToolkit.Mvvm.Input;
 using WinPaint.App.Resources;
 using WinPaint.App.Services;
@@ -56,7 +55,8 @@ public sealed partial class MainViewModel
         var px = ActiveSelection?.CopySelection();
         if (px is not null)
         {
-            TryClipboard(() => _clipboard.SetImage(px));
+            _clipboard.SetImage(px);
+            ReportClipboard();
         }
     }
 
@@ -64,8 +64,10 @@ public sealed partial class MainViewModel
     private void Cut()
     {
         var px = ActiveSelection?.CopySelection();
-        if (px is not null && TryClipboard(() => _clipboard.SetImage(px)))
+        if (px is not null)
         {
+            _clipboard.SetImage(px);
+            ReportClipboard();
             ActiveSelection!.DeleteSelection();
             ToolStateChanged();
         }
@@ -74,13 +76,14 @@ public sealed partial class MainViewModel
     [RelayCommand]
     private void Paste()
     {
-        PixelBuffer? img = null;
-        if (!TryClipboard(() => img = _clipboard.GetImage()) || img is null)
+        var img = _clipboard.GetImage();
+        if (img is null)
         {
             return;
         }
 
         PasteImage(img);
+        ReportClipboard();
     }
 
     /// <summary>Pastes an image as a floating selection at the top-left of the visible area.</summary>
@@ -337,16 +340,11 @@ public sealed partial class MainViewModel
         UndoCommand.NotifyCanExecuteChanged();
     }
 
-    private static bool TryClipboard(Action action)
+    private void ReportClipboard()
     {
-        try
+        if (_clipboard.LastUsedFallback)
         {
-            action();
-            return true;
-        }
-        catch (ExternalException)
-        {
-            return false;
+            StatusNotice = Strings.Status_ClipboardFallback;
         }
     }
 }

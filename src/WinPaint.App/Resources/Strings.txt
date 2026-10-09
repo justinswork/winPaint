@@ -203,6 +203,7 @@ Status_ZoomOut=Zoom out (Ctrl+PgDn)
 Status_Fit=Fit to window (Ctrl+0)
 Status_Zoom=Zoom level
 Status_ResizePreview=New size: {0} × {1}px
+Status_ClipboardFallback=The Windows clipboard is unavailable right now; the image is kept inside winPaint.
 
 # Prompts and messages
 Prompt_SaveChanges=Do you want to save changes to {0}?

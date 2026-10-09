@@ -76,10 +76,10 @@
                     <MenuItem Header="{x:Static res:Strings.File_Import}">
                         <MenuItem Header="{x:Static res:Strings.File_ImportFromFile}" Command="{Binding PasteFromCommand}" />
                     </MenuItem>
-                    <MenuItem Header="{x:Static res:Strings.File_Print}">
-                        <MenuItem Header="{x:Static res:Strings.File_PrintDots}" Command="{Binding PrintCommand}" InputGestureText="Ctrl+P" />
-                        <MenuItem Header="{x:Static res:Strings.File_PageSetup}" Command="{Binding PageSetupCommand}" />
-                        <MenuItem Header="{x:Static res:Strings.File_PrintPreview}" Command="{Binding PrintPreviewCommand}" />
+                    <MenuItem Header="{x:Static res:Strings.File_Print}" AutomationProperties.AutomationId="FilePrintMenu">
+                        <MenuItem Header="{x:Static res:Strings.File_PrintDots}" Command="{Binding PrintCommand}" InputGestureText="Ctrl+P" AutomationProperties.AutomationId="FilePrint" />
+                        <MenuItem Header="{x:Static res:Strings.File_PageSetup}" Command="{Binding PageSetupCommand}" AutomationProperties.AutomationId="FilePageSetup" />
+                        <MenuItem Header="{x:Static res:Strings.File_PrintPreview}" Command="{Binding PrintPreviewCommand}" AutomationProperties.AutomationId="FilePrintPreview" />
                     </MenuItem>
                     <MenuItem Header="{x:Static res:Strings.File_SetDesktop}">
                         <MenuItem Header="{x:Static res:Strings.File_SetFill}" Command="{Binding SetDesktopCommand}" CommandParameter="{x:Static svc:WallpaperStyle.Fill}" />
@@ -106,8 +106,8 @@
                     <Separator />
                     <MenuItem Header="{x:Static res:Strings.Img_Resize}" Command="{Binding ResizeSkewCommand}" InputGestureText="Ctrl+W" />
                     <MenuItem Header="{x:Static res:Strings.Edit_InvertColors}" Command="{Binding InvertColorsCommand}" InputGestureText="Ctrl+Shift+I" />
-                    <MenuItem Header="{x:Static res:Strings.Img_TransparentCanvas}" Command="{Binding ToggleTransparentCanvasCommand}" IsCheckable="False" IsChecked="{Binding IsTransparentCanvas, Mode=OneWay}" />
-                    <MenuItem Header="{x:Static res:Strings.Layer_Flatten}" Command="{Binding Layers.FlattenCommand}" />
+                    <MenuItem Header="{x:Static res:Strings.Img_TransparentCanvas}" Command="{Binding ToggleTransparentCanvasCommand}" IsCheckable="False" IsChecked="{Binding IsTransparentCanvas, Mode=OneWay}" AutomationProperties.AutomationId="EditTransparentCanvas" />
+                    <MenuItem Header="{x:Static res:Strings.Layer_Flatten}" Command="{Binding Layers.FlattenCommand}" AutomationProperties.AutomationId="EditFlatten" />
                 </MenuItem>
                 <MenuItem Header="{x:Static res:Strings.Menu_View}" AutomationProperties.AutomationId="ViewMenu">
                     <MenuItem Header="{x:Static res:Strings.View_Zoom}">
@@ -133,10 +133,10 @@
                     <MenuItem Header="{x:Static res:Strings.View_Gridlines}" IsCheckable="True" IsChecked="{Binding ShowGridlines}" InputGestureText="Ctrl+G" AutomationProperties.AutomationId="ViewGridlines" />
                     <MenuItem Header="{x:Static res:Strings.View_StatusBar}" IsCheckable="True" IsChecked="{Binding ShowStatusBar}" />
                     <MenuItem Header="{x:Static res:Strings.View_Layers}" IsCheckable="True" IsChecked="{Binding ShowLayers}" />
-                    <MenuItem Header="{x:Static res:Strings.View_Thumbnail}" IsCheckable="True" IsChecked="{Binding ShowThumbnail}" />
+                    <MenuItem Header="{x:Static res:Strings.View_Thumbnail}" IsCheckable="True" IsChecked="{Binding ShowThumbnail}" AutomationProperties.AutomationId="ViewThumbnail" />
                     <MenuItem Header="{x:Static res:Strings.View_FullScreen}" Command="{Binding FullScreenCommand}" InputGestureText="F11" />
                     <Separator />
-                    <MenuItem Header="{x:Static res:Strings.View_Theme}">
+                    <MenuItem Header="{x:Static res:Strings.View_Theme}" AutomationProperties.AutomationId="ViewTheme">
                         <MenuItem Header="{x:Static res:Strings.Theme_Light}" Command="{Binding SetThemeCommand}" CommandParameter="{x:Static svc:AppTheme.Light}" IsChecked="{Binding Theme, Converter={StaticResource EnumEq}, ConverterParameter=Light, Mode=OneWay}" AutomationProperties.AutomationId="ThemeLight" />
                         <MenuItem Header="{x:Static res:Strings.Theme_Dark}" Command="{Binding SetThemeCommand}" CommandParameter="{x:Static svc:AppTheme.Dark}" IsChecked="{Binding Theme, Converter={StaticResource EnumEq}, ConverterParameter=Dark, Mode=OneWay}" AutomationProperties.AutomationId="ThemeDark" />
                         <MenuItem Header="{x:Static res:Strings.Theme_System}" Command="{Binding SetThemeCommand}" CommandParameter="{x:Static svc:AppTheme.System}" IsChecked="{Binding Theme, Converter={StaticResource EnumEq}, ConverterParameter=System, Mode=OneWay}" />

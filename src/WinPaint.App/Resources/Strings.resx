@@ -188,6 +188,7 @@ Flatten the image?</value></data>
   <data name="Status_Fit" xml:space="preserve"><value>Fit to window (Ctrl+0)</value></data>
   <data name="Status_Zoom" xml:space="preserve"><value>Zoom level</value></data>
   <data name="Status_ResizePreview" xml:space="preserve"><value>New size: {0} × {1}px</value></data>
+  <data name="Status_ClipboardFallback" xml:space="preserve"><value>The Windows clipboard is unavailable right now; the image is kept inside winPaint.</value></data>
   <data name="Prompt_SaveChanges" xml:space="preserve"><value>Do you want to save changes to {0}?</value></data>
   <data name="Prompt_Save" xml:space="preserve"><value>_Save</value></data>
   <data name="Prompt_DontSave" xml:space="preserve"><value>Do_n&apos;t save</value></data>

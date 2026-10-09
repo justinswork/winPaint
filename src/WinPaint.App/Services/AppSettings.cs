@@ -134,7 +134,12 @@ public sealed class AppSettings
 /// <summary>Loads and saves <see cref="AppSettings"/>.</summary>
 public sealed class SettingsService
 {
-    private static readonly JsonSerializerOptions Options = new() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.Never };
+    private static readonly JsonSerializerOptions Options = new()
+    {
+        WriteIndented = true,
+        DefaultIgnoreCondition = JsonIgnoreCondition.Never,
+        Converters = { new JsonStringEnumConverter() },
+    };
 
     /// <summary>Creates the service for a settings file path (default: %AppData%\winPaint\settings.json).</summary>
     public SettingsService(string? path = null)

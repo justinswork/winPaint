@@ -178,7 +178,7 @@ public sealed class AppSession : IDisposable
     /// <summary>Waits for a native (Win32 common) dialog of the app.</summary>
     public AutomationElement WaitForNativeDialog(double timeoutSeconds = 15) =>
         WaitFor(
-            () => MainWindow.FindFirstChild(c => c.ByClassName("#32770")) ?? Windows().FirstOrDefault(w => w.ClassName == "#32770"),
+            () => MainWindow.FindFirstChild(c => c.ByClassName("#32770")),
             TimeSpan.FromSeconds(timeoutSeconds),
             "native dialog did not appear");
 
@@ -312,6 +312,33 @@ public sealed class AppSession : IDisposable
         Thread.Sleep(200);
         var ok = WaitFor(() => dialog.FindFirstDescendant(c => c.ByAutomationId("1").And(c.ByControlType(ControlType.Button))), TimeSpan.FromSeconds(15), "dialog button not found");
         ok.Patterns.Invoke.Pattern.Invoke();
+    }
+
+    /// <summary>
+    /// Cancels the Windows print dialog. On Windows 11 the WPF PrintDialog shows the modern print UI hosted by the
+    /// system (another process); older systems show the classic #32770 dialog.
+    /// </summary>
+    public void CancelPrintDialog()
+    {
+        var desktop = _automation.GetDesktop();
+        AutomationElement? cancel = null;
+        WaitUntil(
+            () =>
+            {
+                var classic = MainWindow.FindFirstChild(c => c.ByClassName("#32770"));
+                if (classic is not null)
+                {
+                    cancel = classic.FindFirstDescendant(c => c.ByAutomationId("2").And(c.ByControlType(ControlType.Button)));
+                    return cancel is not null;
+                }
+
+                var modern = desktop.FindFirstChild(c => c.ByClassName("ApplicationFrameWindow").And(c.ByName("winPaint - Print")));
+                cancel = modern?.FindFirstDescendant(c => c.ByName("Cancel").And(c.ByControlType(ControlType.Button)));
+                return cancel is not null;
+            },
+            TimeSpan.FromSeconds(30),
+            "print dialog did not appear");
+        cancel!.Patterns.Invoke.Pattern.Invoke();
     }
 
     /// <summary>Presses Cancel in a Windows common dialog.</summary>
