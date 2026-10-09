@@ -55,7 +55,6 @@ public class MoreUiTests
             Assert.InRange(s.MainWindow.BoundingRectangle.Width, 1050, 1150);
         }
 
-        Directory.Delete(Path.GetDirectoryName(settings)!, true);
     }
 
     /// <summary>F-UI-04 / F-UI-07: every toolbar control has a tooltip and an accessible name.</summary>
@@ -64,7 +63,8 @@ public class MoreUiTests
     {
         using var s = AppSession.Launch();
         var toolbar = s.Find("Toolbar");
-        var buttons = toolbar.FindAllDescendants(c => c.ByControlType(ControlType.Button)).ToList();
+        // Scroll-bar arrows of the shape gallery are part of the ScrollViewer template, not toolbar commands.
+        var buttons = toolbar.FindAllDescendants(c => c.ByControlType(ControlType.Button)).Where(b => !b.AutomationId.StartsWith("PART_", StringComparison.Ordinal) && b.Parent?.ControlType != ControlType.ScrollBar).ToList();
         Assert.True(buttons.Count > 60, $"only {buttons.Count} toolbar buttons found");
         foreach (var b in buttons)
         {
@@ -127,12 +127,13 @@ public class MoreUiTests
         File.Delete(gone);
         s.ExpandMenu("FileMenu");
         s.ExpandMenu("FileRecent");
-        s.InvokeByName("_1 " + Path.GetFileName(gone));
+        s.InvokeByName("1 " + Path.GetFileName(gone));
         s.WaitForWindow("MessageDialog");
         s.SnapshotWindow("MessageDialog", "F-FILE-07_recent_missing");
         s.Invoke("DialogButton0");
 
         // Exit from the menu with unsaved changes: prompt → Don't save.
+        s.Invoke("ToolPencil");
         s.Run("drag 10 10 200 200");
         s.ExpandMenu("FileMenu");
         s.InvokeByName("Exit");

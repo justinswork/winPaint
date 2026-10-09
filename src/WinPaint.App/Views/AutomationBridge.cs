@@ -56,6 +56,8 @@ internal static class AutomationBridge
             ("selection", vm.SelectionText),
             ("layers", doc.Layers.Count),
             ("activeLayer", doc.ActiveLayerIndex),
+            ("layerOpacity", Math.Round(doc.ActiveLayer.Opacity * 100).ToString(CultureInfo.InvariantCulture)),
+            ("layerBlend", doc.ActiveLayer.BlendMode),
             ("primary", vm.PrimaryColor.ToString(CultureInfo.InvariantCulture)),
             ("secondary", vm.SecondaryColor.ToString(CultureInfo.InvariantCulture)),
             ("size", vm.ToolSize),

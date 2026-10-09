@@ -49,3 +49,19 @@
   in-process (`RenderTargetBitmap` of the window), which works on a locked desktop. The automation interface is a
   legitimate accessibility/automation feature (scripted drawing), documented in `CanvasView.Automation.cs`.
 - **2026-10-08** Cloud callout geometry is normalized to exactly fill its drag box.
+- **2026-10-09** Test corrections (tests were wrong, not the app): T09 applied the background colour before switching
+  to an opaque background (no visible change is correct); ShiftDragStampsTrail and the polygon UI case assumed
+  sparse mouse moves where a real drag delivers many; Layers UI test now expects the documented flattening when a
+  Multiply/60 % layer is merged down; tooltip test excludes ScrollViewer template buttons.
+- **2026-10-09** Synthetic WPF mouse moves (sent while the mouse is captured) carry the physical cursor position; real
+  mouse events are ignored while an automation client drives a drag, so the two input sources can't mix.
+- **2026-10-09** WPF's TextBox keeps a fixed 2 px internal margin on each side of its text view. The editor overlay's
+  content host gets a −2 px horizontal margin so the text view starts at the box origin and wraps at exactly the box
+  width; measured caret/glyph deviation is 0 px at 50–800 %.
+- **2026-10-09** The system clipboard can't be opened in this (locked) session. When OpenClipboard fails, winPaint
+  keeps the copied image in an in-app clipboard and says so in the status bar, so copy/cut/paste keep working.
+- **2026-10-09** Whole-image rotate/flip/resize/skew/invert/black-and-white on images above 4K (8.3 MP) run their pixel
+  work on a background task: busy cursor, the window keeps repainting, edits and shortcuts are blocked until done.
+- **2026-10-09** On Windows 11, WPF's PrintDialog shows the system's modern print UI (separate process); the U-08 test
+  cancels it there. Set-as-wallpaper is verified up to the save-first prompt only; tests never change the real wallpaper.
+- **2026-10-09** P2 items (scanner/camera import, share sheet, screen eyedropper) are not implemented (optional).

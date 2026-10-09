@@ -230,7 +230,9 @@ public sealed class AppSession : IDisposable
     public void InvokeByName(string name)
     {
         var e = WaitFor(
-            () => Windows().Select(w => w.FindFirstDescendant(c => c.ByName(name))).FirstOrDefault(x => x is not null),
+            () => Windows()
+                .SelectMany(w => w.FindAllDescendants(c => c.ByName(name)))
+                .FirstOrDefault(x => x.Patterns.Invoke.IsSupported || x.Patterns.ExpandCollapse.IsSupported || x.Patterns.Toggle.IsSupported || x.Patterns.SelectionItem.IsSupported),
             TimeSpan.FromSeconds(10),
             $"element named '{name}' not found");
         if (e.Patterns.Invoke.IsSupported)
@@ -240,6 +242,10 @@ public sealed class AppSession : IDisposable
         else if (e.Patterns.ExpandCollapse.IsSupported)
         {
             e.Patterns.ExpandCollapse.Pattern.Expand();
+        }
+        else if (e.Patterns.SelectionItem.IsSupported)
+        {
+            e.Patterns.SelectionItem.Pattern.Select();
         }
         else
         {
@@ -334,10 +340,17 @@ public sealed class AppSession : IDisposable
     public static void FileDialogAccept(AutomationElement dialog, string path)
     {
         ArgumentNullException.ThrowIfNull(dialog);
-        var edit = WaitFor(() => dialog.FindFirstDescendant(c => c.ByAutomationId("1001").And(c.ByControlType(ControlType.Edit))), TimeSpan.FromSeconds(15), "file name box not found");
+        // Save dialogs use id 1001 for the file name box, Open dialogs 1148.
+        var edit = WaitFor(
+            () => dialog.FindFirstDescendant(c => c.ByAutomationId("1001").Or(c.ByAutomationId("1148")).And(c.ByControlType(ControlType.Edit))),
+            TimeSpan.FromSeconds(15),
+            "file name box not found");
         edit.Patterns.Value.Pattern.SetValue(path);
         Thread.Sleep(200);
-        var ok = WaitFor(() => dialog.FindFirstDescendant(c => c.ByAutomationId("1").And(c.ByControlType(ControlType.Button))), TimeSpan.FromSeconds(15), "dialog button not found");
+        var ok = WaitFor(
+            () => dialog.FindFirstDescendant(c => c.ByAutomationId("1").And(c.ByControlType(ControlType.Button).Or(c.ByControlType(ControlType.SplitButton)))),
+            TimeSpan.FromSeconds(15),
+            "dialog button not found");
         ok.Patterns.Invoke.Pattern.Invoke();
     }
 

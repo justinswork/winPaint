@@ -109,6 +109,13 @@ public class FeatureUiTests
         s.Invoke("LayerDuplicate");
         Assert.Equal(3, s.StateInt("layers"));
         Assert.Equal(2, s.StateInt("texts"));
+        // Per-layer opacity and blend mode.
+        s.Find("LayerOpacity").Patterns.RangeValue.Pattern.SetValue(60);
+        AppSession.WaitUntil(() => s.State("layerOpacity") == "60", TimeSpan.FromSeconds(10), "layer opacity not applied");
+        var blend = s.Find("LayerBlend");
+        blend.Patterns.ExpandCollapse.Pattern.Expand();
+        s.InvokeByName("Multiply");
+        AppSession.WaitUntil(() => s.State("layerBlend") == "Multiply", TimeSpan.FromSeconds(10), "blend mode not applied");
         s.Snapshot("F-LAY-01_layers_panel");
         s.Invoke("LayerDelete");
         Assert.Equal(2, s.StateInt("layers"));
@@ -118,7 +125,9 @@ public class FeatureUiTests
         s.Invoke("LayerMoveUp");
         s.Invoke("LayerMergeDown");
         Assert.Equal(2, s.StateInt("layers"));
-        Assert.Equal(2, s.StateInt("texts"));
+
+        // The merged layer used Multiply at 60 %, so its text was flattened into pixels (DECISIONS.md); the other stays live.
+        Assert.Equal(1, s.StateInt("texts"));
 
         // Flatten (asks for confirmation; text becomes pixels).
         s.Invoke("LayerFlatten");
