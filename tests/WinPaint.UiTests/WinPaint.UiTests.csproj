@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\WinPaint.App\WinPaint.App.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\..\src\WinPaint.Core\WinPaint.Core.csproj" />
   </ItemGroup>
 
 </Project>

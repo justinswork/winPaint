@@ -207,13 +207,14 @@ internal sealed class OilEngine : BrushEngine
     public OilEngine(Color color, int size, int seed)
         : base(color, size, seed)
     {
-        var n = Math.Max(5, size);
+        // Bristles spread across the whole tip: overlapping streaks with slightly different paint load and shade.
+        var n = Math.Max(8, size * 2);
         _bristles = new (Vector, double, double, double)[n];
         for (var i = 0; i < n; i++)
         {
             var a = Random.NextDouble() * Math.PI * 2;
             var d = Math.Sqrt(Random.NextDouble()) * size / 2.0;
-            _bristles[i] = (new Vector(Math.Cos(a) * d, Math.Sin(a) * d), 0.55 + (Random.NextDouble() * 0.45), 0.85 + (Random.NextDouble() * 0.3), Math.Max(0.6, size / 12.0));
+            _bristles[i] = (new Vector(Math.Cos(a) * d, Math.Sin(a) * d), 0.45 + (Random.NextDouble() * 0.55), 0.8 + (Random.NextDouble() * 0.35), Math.Max(0.9, size / 7.0));
         }
     }
 
@@ -287,9 +288,9 @@ internal sealed class WatercolorEngine(Color color, int size, int seed) : BrushE
                     continue;
                 }
 
-                var rim = Math.Pow(d, 4) * 0.25;
+                var rim = Math.Pow(d, 4) * 0.3;
                 var edge = Math.Clamp((1.0 - d) * r, 0, 1);
-                var a = (0.22 + rim) * edge * (0.85 + (0.15 * Raster.Noise(x, y, Seed)));
+                var a = (0.32 + rim) * edge * (0.85 + (0.15 * Raster.Noise(x, y, Seed)));
                 canvas.PlotCoverage(x, y, Color, a, StrokeCombine.Max);
             }
         }

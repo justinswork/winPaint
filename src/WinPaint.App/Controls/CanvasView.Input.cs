@@ -91,16 +91,35 @@ public sealed partial class CanvasView
 
     private void OnMouseDown(object sender, MouseButtonEventArgs e)
     {
+        if (_injectedDrag)
+        {
+            e.Handled = true;
+            return;
+        }
+
         if (HandleDown(e.GetPosition(_viewport), Map(e.ChangedButton), Keyboard.Modifiers, e.ClickCount, Keyboard.IsKeyDown(Key.Space)))
         {
             e.Handled = true;
         }
     }
 
-    private void OnMouseMove(object sender, MouseEventArgs e) => HandleMove(e.GetPosition(_viewport), Keyboard.Modifiers);
+    private void OnMouseMove(object sender, MouseEventArgs e)
+    {
+        // While an automation client drives a drag, ignore the physical (or synthetic) mouse so it can't interfere.
+        if (!_injectedDrag)
+        {
+            HandleMove(e.GetPosition(_viewport), Keyboard.Modifiers);
+        }
+    }
 
     private void OnMouseUp(object sender, MouseButtonEventArgs e)
     {
+        if (_injectedDrag)
+        {
+            e.Handled = true;
+            return;
+        }
+
         if (HandleUp(e.GetPosition(_viewport), Map(e.ChangedButton), Keyboard.Modifiers))
         {
             e.Handled = true;

@@ -490,6 +490,30 @@ public class ToolTests
     });
 
     [Fact]
+    public void PolygonKeepsEveryClickedVertex() => Sta(() =>
+    {
+        var doc = new PaintDocument(1152, 648);
+        var host = new FakeHost(doc);
+        host.Settings.Shape = ShapeKind.Polygon;
+        var st = new ShapeTool(host);
+        void Click(double x, double y, int count = 1)
+        {
+            st.OnPointerDown(new PointerInput(new Point(x, y), PointerButton.Left, ModifierKeys.None, count));
+            st.OnPointerUp(new PointerInput(new Point(x, y), PointerButton.Left, ModifierKeys.None, count));
+        }
+
+        FakeHost.Drag(st, PointerButton.Left, new Point(955, 145), new Point(990, 85), new Point(1025, 25));
+        Click(1105, 145);
+        Click(1030, 115);
+        Click(1030, 115);
+        Click(1030, 115, 2);
+        st.CommitPending();
+        var flat = doc.Flatten();
+        Assert.NotEqual(ColorUtil.White, flat[1104, 144]);
+        Assert.Equal(ColorUtil.White, flat[400, 150]);
+    });
+
+    [Fact]
     public void PickerAndMagnifier() => Sta(() =>
     {
         var doc = new PaintDocument(50, 50);

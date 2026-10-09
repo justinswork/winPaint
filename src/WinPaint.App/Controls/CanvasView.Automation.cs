@@ -21,6 +21,8 @@ public sealed partial class CanvasView
     /// <summary>Supplies the automation state summary.</summary>
     public Func<string>? AutomationState { get; set; }
 
+    private bool _injectedDrag;
+
     /// <summary>Number of automation scripts completed (so clients can wait for asynchronous execution).</summary>
     public int AutomationCompleted { get; private set; }
 
@@ -88,6 +90,22 @@ public sealed partial class CanvasView
 
         var space = words.Contains("space");
         Point P(int i) => _vt.CanvasToView(new Point(numbers[i], numbers[i + 1]));
+        _injectedDrag = verb is "down" or "move" or "click" or "dblclick" or "drag" || (_injectedDrag && verb != "up");
+        try
+        {
+            return ExecutePointerVerb(verb, numbers, words, button, mods, space, P);
+        }
+        finally
+        {
+            if (verb is "up" or "click" or "dblclick" or "drag")
+            {
+                _injectedDrag = false;
+            }
+        }
+    }
+
+    private bool ExecutePointerVerb(string verb, List<double> numbers, List<string> words, PointerButton button, ModifierKeys mods, bool space, Func<int, Point> P)
+    {
         switch (verb)
         {
             case "down" when numbers.Count >= 2:

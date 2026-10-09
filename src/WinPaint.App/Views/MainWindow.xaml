@@ -169,9 +169,9 @@
         <Border Grid.Row="2" Margin="6,0,6,4" Padding="8,4" CornerRadius="8" Background="{DynamicResource ToolbarBackgroundBrush}" BorderBrush="{DynamicResource SeparatorBrush}" BorderThickness="1"
                 Visibility="{Binding IsTextToolbarVisible, Converter={StaticResource BoolVis}}" AutomationProperties.AutomationId="TextToolbar">
             <StackPanel Orientation="Horizontal">
-                <ComboBox Width="190" IsEditable="True" ItemsSource="{Binding Source={x:Static vm:MainViewModel.FontFamilies}}" Text="{Binding TextFontFamily, UpdateSourceTrigger=LostFocus}"
+                <ComboBox Width="190" IsEditable="True" ItemsSource="{Binding Source={x:Static vm:MainViewModel.FontFamilies}}" Text="{Binding TextFontFamily, UpdateSourceTrigger=PropertyChanged, Delay=400}"
                           ToolTip="{x:Static res:Strings.Text_Font}" AutomationProperties.Name="{x:Static res:Strings.Text_Font}" AutomationProperties.AutomationId="FontFamilyBox" Focusable="True" IsTabStop="True" />
-                <ComboBox Width="72" Margin="6,0,0,0" IsEditable="True" ItemsSource="{Binding Source={x:Static vm:MainViewModel.FontSizes}}" Text="{Binding TextFontSize, UpdateSourceTrigger=LostFocus}"
+                <ComboBox Width="72" Margin="6,0,0,0" IsEditable="True" ItemsSource="{Binding Source={x:Static vm:MainViewModel.FontSizes}}" Text="{Binding TextFontSize, UpdateSourceTrigger=PropertyChanged, Delay=300}"
                           ToolTip="{x:Static res:Strings.Text_Size}" AutomationProperties.Name="{x:Static res:Strings.Text_Size}" AutomationProperties.AutomationId="FontSizeBox" />
                 <Border Style="{StaticResource GroupSeparator}" />
                 <ToggleButton Style="{StaticResource ToolToggle}" IsChecked="{Binding TextBold}" ToolTip="Bold (Ctrl+B)" AutomationProperties.Name="{x:Static res:Strings.Text_Bold}" AutomationProperties.AutomationId="BoldButton" Focusable="False">
@@ -240,14 +240,14 @@
                 <StackPanel Grid.Column="5" Orientation="Horizontal">
                     <TextBox Width="62" Text="{Binding ZoomPercent, StringFormat={}{0:0.#}%, UpdateSourceTrigger=LostFocus}" VerticalAlignment="Center" ToolTip="{x:Static res:Strings.Status_Zoom}"
                              AutomationProperties.Name="{x:Static res:Strings.Status_Zoom}" AutomationProperties.AutomationId="ZoomBox" KeyDown="OnZoomBoxKeyDown" />
-                    <Button Style="{StaticResource ToolButton}" Command="{Binding ZoomOutCommand}" ToolTip="{x:Static res:Strings.Status_ZoomOut}" AutomationProperties.Name="{x:Static res:Strings.View_ZoomOut}" MinWidth="28" MinHeight="28">
+                    <Button Style="{StaticResource ToolButton}" Command="{Binding ZoomOutCommand}" ToolTip="{x:Static res:Strings.Status_ZoomOut}" AutomationProperties.Name="{x:Static res:Strings.Status_ZoomOut}" AutomationProperties.AutomationId="ZoomOutButton" MinWidth="28" MinHeight="28">
                         <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Minus}" Width="12" Height="12" />
                     </Button>
                     <Slider Width="130" Minimum="1" Maximum="800" Value="{Binding ZoomPercent}" VerticalAlignment="Center" ToolTip="{x:Static res:Strings.Status_Zoom}" AutomationProperties.Name="{x:Static res:Strings.Status_Zoom}" AutomationProperties.AutomationId="ZoomSlider" />
-                    <Button Style="{StaticResource ToolButton}" Command="{Binding ZoomInCommand}" ToolTip="{x:Static res:Strings.Status_ZoomIn}" AutomationProperties.Name="{x:Static res:Strings.View_ZoomIn}" MinWidth="28" MinHeight="28">
+                    <Button Style="{StaticResource ToolButton}" Command="{Binding ZoomInCommand}" ToolTip="{x:Static res:Strings.Status_ZoomIn}" AutomationProperties.Name="{x:Static res:Strings.Status_ZoomIn}" AutomationProperties.AutomationId="ZoomInButton" MinWidth="28" MinHeight="28">
                         <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Plus}" Width="12" Height="12" />
                     </Button>
-                    <Button Style="{StaticResource ToolButton}" Command="{Binding ZoomFitCommand}" ToolTip="{x:Static res:Strings.Status_Fit}" AutomationProperties.Name="{x:Static res:Strings.View_ZoomFit}" MinWidth="28" MinHeight="28">
+                    <Button Style="{StaticResource ToolButton}" Command="{Binding ZoomFitCommand}" ToolTip="{x:Static res:Strings.Status_Fit}" AutomationProperties.Name="{x:Static res:Strings.Status_Fit}" AutomationProperties.AutomationId="ZoomFitButton" MinWidth="28" MinHeight="28">
                         <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Fit}" Width="14" Height="14" />
                     </Button>
                 </StackPanel>

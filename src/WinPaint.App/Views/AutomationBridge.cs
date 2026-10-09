@@ -50,6 +50,9 @@ internal static class AutomationBridge
             ("grid", vm.ShowGridlines ? 1 : 0),
             ("theme", vm.Theme),
             ("file", vm.FilePath),
+            ("editRect", EditRect(window)),
+            ("viewRect", ViewRect(window)),
+            ("editFrame", t is null ? null : FrameText(Core.Text.TextLayoutEngine.EffectiveBox(t))),
             ("caretDev", LastCaretDeviation.ToString("0.###", CultureInfo.InvariantCulture)),
             ("caretDiag", window.Canvas.Editor.Diag),
             ("tool2", vm.BrushKind + "/" + vm.ShapeKind),
@@ -99,8 +102,26 @@ internal static class AutomationBridge
             case "selectalltext":
                 window.Canvas.Editor.SelectAll();
                 return true;
+            case "caret":
+                window.Canvas.Editor.TextBox.CaretIndex = int.Parse(arg, CultureInfo.InvariantCulture);
+                return true;
+            case "palette":
+                vm.PickPaletteColorCommand.Execute(vm.Palette[int.Parse(arg, CultureInfo.InvariantCulture)]);
+                return true;
+            case "resizewindow":
+                var wh = arg.Split(' ');
+                window.WindowState = WindowState.Normal;
+                window.Width = double.Parse(wh[0], CultureInfo.InvariantCulture);
+                window.Height = double.Parse(wh[1], CultureInfo.InvariantCulture);
+                window.UpdateLayout();
+                return true;
             case "zoom":
                 vm.Zoom = double.Parse(arg, CultureInfo.InvariantCulture);
+                return true;
+            case "scrolltocanvas":
+                var cxy = arg.Split(' ');
+                var viewPt = window.Canvas.Transform.CanvasToView(new Point(double.Parse(cxy[0], CultureInfo.InvariantCulture), double.Parse(cxy[1], CultureInfo.InvariantCulture)));
+                window.Canvas.ScrollBy(viewPt.X, viewPt.Y);
                 return true;
             case "scrollto":
                 var xy = arg.Split(' ');
@@ -109,6 +130,34 @@ internal static class AutomationBridge
         }
 
         return false;
+    }
+
+    private static string ViewRect(MainWindow window)
+    {
+        var dpi = VisualTreeHelper.GetDpi(window);
+        var vp = window.Canvas.Viewport;
+        var tl = vp.TranslatePoint(new Point(0, 0), window.RootElement);
+        return string.Create(CultureInfo.InvariantCulture, $"{tl.X * dpi.DpiScaleX:0},{tl.Y * dpi.DpiScaleY:0},{vp.ActualWidth * dpi.DpiScaleX:0},{vp.ActualHeight * dpi.DpiScaleY:0}");
+    }
+
+    private static string FrameText(Rect r) => string.Create(CultureInfo.InvariantCulture, $"{r.X:0.##},{r.Y:0.##},{r.Width:0.##},{r.Height:0.##}");
+
+    /// <summary>The edited text box in snapshot pixel coordinates ("x,y,w,h"), or empty.</summary>
+    private static string EditRect(MainWindow window)
+    {
+        var poly = window.Canvas.Editor.FrameViewPolygon();
+        if (poly.Count == 0)
+        {
+            return string.Empty;
+        }
+
+        var dpi = VisualTreeHelper.GetDpi(window);
+        var pts = poly.Select(p => window.Canvas.Viewport.TranslatePoint(p, window.RootElement)).ToList();
+        var x = pts.Min(p => p.X) * dpi.DpiScaleX;
+        var y = pts.Min(p => p.Y) * dpi.DpiScaleY;
+        var r = pts.Max(p => p.X) * dpi.DpiScaleX;
+        var b = pts.Max(p => p.Y) * dpi.DpiScaleY;
+        return string.Create(CultureInfo.InvariantCulture, $"{x:0},{y:0},{r - x:0},{b - y:0}");
     }
 
     /// <summary>Parses "Ctrl+Shift+S" style gestures.</summary>

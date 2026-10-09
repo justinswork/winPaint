@@ -23,7 +23,7 @@
         <DataTemplate x:Key="SwatchTemplate" DataType="{x:Type vm:Swatch}">
             <Button Style="{StaticResource SwatchButton}" Background="{Binding Color, Converter={StaticResource ColorBrush}}"
                     Command="{Binding Tag.PickPaletteColorCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}"
-                    ToolTip="{Binding Name}" AutomationProperties.Name="{Binding Name}" Width="18" Height="18" Margin="1.5">
+                    ToolTip="{Binding Name}" AutomationProperties.Name="{Binding Name}" AutomationProperties.AutomationId="{Binding Name}" Width="18" Height="18" Margin="1.5">
                 <Button.InputBindings>
                     <MouseBinding MouseAction="RightClick" Command="{Binding Tag.PickPaletteSecondaryCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" />
                 </Button.InputBindings>
