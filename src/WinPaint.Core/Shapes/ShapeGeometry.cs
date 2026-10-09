@@ -90,7 +90,7 @@ public static class ShapeGeometry
             ShapeKind.Heart => Heart(bounds),
             ShapeKind.RoundedRectCallout => RoundedCallout(bounds),
             ShapeKind.OvalCallout => OvalCallout(bounds),
-            ShapeKind.CloudCallout => CloudCallout(bounds),
+            ShapeKind.CloudCallout => FitTo(CloudCallout(bounds), bounds),
             ShapeKind.Line or ShapeKind.Curve or ShapeKind.Polygon => throw new ArgumentException("Use the point-based builders.", nameof(kind)),
             _ => FromPoints(PolygonPoints(kind, bounds), closed: true),
         };
@@ -110,12 +110,7 @@ public static class ShapeGeometry
     }
 
     /// <summary>Line from a to b.</summary>
-    public static Geometry Line(Point a, Point b)
-    {
-        var g = new LineGeometry(a, b);
-        g.Freeze();
-        return g;
-    }
+    public static Geometry Line(Point a, Point b) => FromPoints([a, b], closed: false);
 
     /// <summary>
     /// Curve through the drag's end points bent by up to two control points (Paint's curve tool).
@@ -136,7 +131,16 @@ public static class ShapeGeometry
     public static IReadOnlyList<(IReadOnlyList<Point> Points, bool Closed)> Flatten(Geometry g, double tolerance = 0.25)
     {
         ArgumentNullException.ThrowIfNull(g);
-        var flat = g.GetFlattenedPathGeometry(tolerance, ToleranceType.Absolute);
+
+        // Open figures with IsFilled=false are dropped by WPF's flattening, so mark every figure filled first
+        // (filling is decided separately by the renderer).
+        var source = PathGeometry.CreateFromGeometry(g);
+        foreach (var fig in source.Figures)
+        {
+            fig.IsFilled = true;
+        }
+
+        var flat = source.GetFlattenedPathGeometry(tolerance, ToleranceType.Absolute);
         var result = new List<(IReadOnlyList<Point>, bool)>();
         foreach (var fig in flat.Figures)
         {
@@ -240,6 +244,24 @@ public static class ShapeGeometry
         acc = Union(acc, new EllipseGeometry(Map(b, 0.2, 0.86), b.Width * 0.05, b.Height * 0.05));
         acc = Union(acc, new EllipseGeometry(Map(b, 0.1, 0.96), b.Width * 0.03, b.Height * 0.03));
         return acc;
+    }
+
+    /// <summary>Scales and moves a geometry so its bounds equal <paramref name="target"/>.</summary>
+    private static Geometry FitTo(Geometry g, Rect target)
+    {
+        var b = g.Bounds;
+        if (b.IsEmpty || b.Width <= 0 || b.Height <= 0)
+        {
+            return g;
+        }
+
+        var m = Matrix.Identity;
+        m.Translate(-b.X, -b.Y);
+        m.Scale(target.Width / b.Width, target.Height / b.Height);
+        m.Translate(target.X, target.Y);
+        var fitted = g.CloneCurrentValue();
+        fitted.Transform = new MatrixTransform(m);
+        return fitted.GetFlattenedPathGeometry(0.1, ToleranceType.Absolute);
     }
 
     private static Geometry Union(Geometry a, Geometry b) =>

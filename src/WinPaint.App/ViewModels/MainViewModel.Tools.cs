@@ -488,8 +488,10 @@ public sealed partial class MainViewModel
         }
 
         OnPropertyChanged(nameof(IsTextToolbarVisible));
+        OnPropertyChanged(nameof(TextSession));
         Layers.Refresh();
         OverlayChanged?.Invoke(this, EventArgs.Empty);
+        UndoCommand.NotifyCanExecuteChanged();
     }
 
     /// <summary>Canvas point where the caret should be placed when the editor opens.</summary>
