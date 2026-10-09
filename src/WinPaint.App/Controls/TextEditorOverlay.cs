@@ -126,6 +126,68 @@ internal sealed class TextEditorOverlay
         }
     }
 
+    /// <summary>
+    /// Largest distance, in physical screen pixels, between the editor's caret positions and the renderer's glyph
+    /// positions for every character index (the WYSIWYG check: caret and glyphs must line up within 1 px).
+    /// </summary>
+    public double MaxCaretDeviation()
+    {
+        var t = _session?.Text;
+        if (t is null)
+        {
+            return double.NaN;
+        }
+
+        _box.UpdateLayout();
+        var ft = TextLayoutEngine.Build(t);
+        var screenScale = _owner.Transform.Zoom * Math.Sqrt(Math.Abs(t.Transform.Determinant));
+        double max = 0;
+        for (var i = 0; i <= t.Text.Length; i++)
+        {
+            if (i < t.Text.Length && (t.Text[i] == '\n' || t.Text[i] == '\r'))
+            {
+                continue;
+            }
+
+            var editor = _box.GetRectFromCharacterIndex(i);
+            Rect glyph;
+            if (i < t.Text.Length)
+            {
+                glyph = ft.BuildHighlightGeometry(new Point(0, 0), i, 1)?.Bounds ?? Rect.Empty;
+            }
+            else if (t.Text.Length > 0 && t.Text[^1] != '\n')
+            {
+                var last = ft.BuildHighlightGeometry(new Point(0, 0), t.Text.Length - 1, 1)?.Bounds ?? Rect.Empty;
+                glyph = last.IsEmpty ? Rect.Empty : new Rect(last.Right, last.Top, 0, last.Height);
+            }
+            else
+            {
+                continue;
+            }
+
+            if (glyph.IsEmpty || editor.IsEmpty)
+            {
+                continue;
+            }
+
+            var dev = Math.Max(Math.Abs(editor.X - glyph.X), Math.Abs(editor.Y - glyph.Y)) * screenScale;
+            if (dev > max)
+            {
+                Diag = string.Create(System.Globalization.CultureInfo.InvariantCulture, $"i={i} ed={editor.X:0.#},{editor.Y:0.#} gl={glyph.X:0.#},{glyph.Y:0.#} lines={_box.LineCount}");
+            }
+
+            max = Math.Max(max, dev);
+        }
+
+        return max;
+    }
+
+    /// <summary>Diagnostics text of the worst mismatch.</summary>
+    public string Diag { get; private set; } = string.Empty;
+
+    /// <summary>Selects all text in the editor (shows the selection highlight).</summary>
+    public void SelectAll() => _box.SelectAll();
+
     /// <summary>The editing frame (effective box corners) in view coordinates.</summary>
     public IReadOnlyList<Point> FrameViewPolygon()
     {
@@ -278,6 +340,10 @@ internal sealed class TextEditorOverlay
         host.SetValue(ScrollViewer.HorizontalScrollBarVisibilityProperty, ScrollBarVisibility.Disabled);
         host.SetValue(ScrollViewer.VerticalScrollBarVisibilityProperty, ScrollBarVisibility.Disabled);
         host.SetValue(Control.PaddingProperty, new Thickness(0));
+
+        // WPF's internal TextBoxView keeps a fixed 2 px margin on each side; widen the host by that much so the text
+        // view starts exactly at the box origin and wraps at exactly the box width (caret == renderer glyphs).
+        host.SetValue(FrameworkElement.MarginProperty, new Thickness(-2, 0, -2, 0));
         host.SetValue(FrameworkElement.FocusVisualStyleProperty, null);
         var svTemplate = new ControlTemplate(typeof(ScrollViewer));
         svTemplate.VisualTree = new FrameworkElementFactory(typeof(ScrollContentPresenter), "PART_ScrollContentPresenter");

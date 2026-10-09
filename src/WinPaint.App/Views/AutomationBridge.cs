@@ -15,6 +15,9 @@ namespace WinPaint.App.Views;
 /// </summary>
 internal static class AutomationBridge
 {
+    /// <summary>Result of the last "measurecaret" command (screen px).</summary>
+    public static double LastCaretDeviation { get; private set; } = double.NaN;
+
     /// <summary>State summary as "key=value" pairs separated by '|'.</summary>
     public static string State(MainViewModel vm, MainWindow window)
     {
@@ -47,6 +50,13 @@ internal static class AutomationBridge
             ("grid", vm.ShowGridlines ? 1 : 0),
             ("theme", vm.Theme),
             ("file", vm.FilePath),
+            ("caretDev", LastCaretDeviation.ToString("0.###", CultureInfo.InvariantCulture)),
+            ("caretDiag", window.Canvas.Editor.Diag),
+            ("tool2", vm.BrushKind + "/" + vm.ShapeKind),
+            ("selectionActive", vm.HasSelection ? 1 : 0),
+            ("floating", vm.Document.Floating is null ? 0 : 1),
+            ("cursor", vm.CursorText),
+            ("imageSize", vm.ImageSizeText),
             ("windows", string.Join(",", Application.Current.Windows.OfType<Window>().Where(w => w.IsVisible && w != window).Select(w => System.Windows.Automation.AutomationProperties.GetAutomationId(w)))),
         };
         return string.Join('|', pairs.Select(p => $"{p.Item1}={Convert.ToString(p.Item2, CultureInfo.InvariantCulture)}"));
@@ -82,6 +92,19 @@ internal static class AutomationBridge
                 return true;
             case "focuscanvas":
                 window.Canvas.Viewport.Focus();
+                return true;
+            case "measurecaret":
+                LastCaretDeviation = window.Canvas.Editor.MaxCaretDeviation();
+                return true;
+            case "selectalltext":
+                window.Canvas.Editor.SelectAll();
+                return true;
+            case "zoom":
+                vm.Zoom = double.Parse(arg, CultureInfo.InvariantCulture);
+                return true;
+            case "scrollto":
+                var xy = arg.Split(' ');
+                window.Canvas.ScrollBy(double.Parse(xy[0], CultureInfo.InvariantCulture) - window.Canvas.Transform.ScrollX, double.Parse(xy[1], CultureInfo.InvariantCulture) - window.Canvas.Transform.ScrollY);
                 return true;
         }
 

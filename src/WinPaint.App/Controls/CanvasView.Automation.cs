@@ -21,6 +21,32 @@ public sealed partial class CanvasView
     /// <summary>Supplies the automation state summary.</summary>
     public Func<string>? AutomationState { get; set; }
 
+    /// <summary>Number of automation scripts completed (so clients can wait for asynchronous execution).</summary>
+    public int AutomationCompleted { get; private set; }
+
+    /// <summary>Last automation error (empty when the last script succeeded).</summary>
+    public string AutomationError { get; private set; } = string.Empty;
+
+    /// <summary>
+    /// Queues a script for execution on the UI thread and returns immediately (commands may open modal dialogs).
+    /// </summary>
+    public void QueueAutomation(string script) => Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Input, () =>
+    {
+        try
+        {
+            ExecuteAutomation(script);
+            AutomationError = string.Empty;
+        }
+        catch (ArgumentException ex)
+        {
+            AutomationError = ex.Message;
+        }
+        finally
+        {
+            AutomationCompleted++;
+        }
+    });
+
     /// <summary>Executes an automation script (commands separated by ';' or new lines).</summary>
     public void ExecuteAutomation(string script)
     {
@@ -127,9 +153,9 @@ public sealed partial class CanvasView
     {
         public bool IsReadOnly => false;
 
-        public string Value => view.AutomationState?.Invoke() ?? string.Empty;
+        public string Value => $"seq={view.AutomationCompleted}|error={view.AutomationError}|{view.AutomationState?.Invoke()}";
 
-        public void SetValue(string value) => view.ExecuteAutomation(value);
+        public void SetValue(string value) => view.QueueAutomation(value);
 
         public override object GetPattern(PatternInterface patternInterface) =>
             patternInterface == PatternInterface.Value ? this : base.GetPattern(patternInterface);

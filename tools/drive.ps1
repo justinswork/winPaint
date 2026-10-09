@@ -28,9 +28,13 @@ foreach ($line in ($Script -join ";").Split(";")) {
     if ($s.StartsWith("invoke:")) { (Find $s.Substring(7)).GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke() }
     elseif ($s.StartsWith("type:")) { (Find "TextEditor").GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).SetValue($s.Substring(5).Replace("\n", "`n")) }
     elseif ($s.StartsWith("sleep:")) { Start-Sleep -Milliseconds ([int]$s.Substring(6)) }
-    else { $vp.SetValue($s) }
-    Start-Sleep -Milliseconds 120
+    else {
+        $seq = [int](($vp.Current.Value -split "\|")[0] -replace "seq=","")
+        $vp.SetValue($s)
+        for ($t = 0; $t -lt 100 -and [int](($vp.Current.Value -split "\|")[0] -replace "seq=","") -le $seq; $t++) { Start-Sleep -Milliseconds 50 }
+    }
+    Start-Sleep -Milliseconds 60
 }
-if ($Snapshot) { Start-Sleep -Milliseconds 300; $vp.SetValue("snapshot $Snapshot") }
+if ($Snapshot) { Start-Sleep -Milliseconds 300; $vp.SetValue("snapshot $Snapshot"); Start-Sleep -Milliseconds 800 }
 Write-Output $vp.Current.Value
-if (-not $KeepOpen) { Stop-Process -Id $p.Id -Force }
+if (-not $KeepOpen) { Get-Process -Id $p.Id -ErrorAction SilentlyContinue | Stop-Process -Force }
