@@ -164,6 +164,9 @@ public sealed partial class MainViewModel
         }
     }
 
+    /// <summary>Text color shown on the Text toolbar: the edited object's color, otherwise Color 1.</summary>
+    public Color TextColorIndicator => Text.Session?.Text.Foreground ?? PrimaryColor;
+
     /// <summary>True when a selection tool is active.</summary>
     public bool IsSelectionToolActive => ActiveToolKind is ToolKind.RectSelect or ToolKind.FreeSelect;
 
@@ -380,6 +383,8 @@ public sealed partial class MainViewModel
             s.Update(t => t.Foreground = value);
         }
 
+        OnPropertyChanged(nameof(TextColorIndicator));
+
         (_activeTool as ShapeTool)?.RefreshFromSettings();
     }
 
@@ -481,6 +486,7 @@ public sealed partial class MainViewModel
 
         OnPropertyChanged(nameof(IsTextToolbarVisible));
         OnPropertyChanged(nameof(TextSession));
+        OnPropertyChanged(nameof(TextColorIndicator));
         Layers.Refresh();
         OverlayChanged?.Invoke(this, EventArgs.Empty);
         UndoCommand.NotifyCanExecuteChanged();

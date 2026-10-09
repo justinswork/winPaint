@@ -196,7 +196,7 @@
                     <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.TextBgOpaque}" />
                 </RadioButton>
                 <Border Style="{StaticResource GroupSeparator}" />
-                <Ellipse Width="18" Height="18" Fill="{Binding PrimaryColor, Converter={StaticResource ColorBrush}}" Stroke="{DynamicResource SwatchBorderBrush}" VerticalAlignment="Center" ToolTip="{x:Static res:Strings.Text_Color}" />
+                <Ellipse Width="18" Height="18" Fill="{Binding TextColorIndicator, Converter={StaticResource ColorBrush}}" Stroke="{DynamicResource SwatchBorderBrush}" VerticalAlignment="Center" ToolTip="{x:Static res:Strings.Text_Color}" />
                 <Border Style="{StaticResource GroupSeparator}" />
                 <Button Style="{StaticResource ToolButton}" Command="{Binding DeleteTextCommand}" ToolTip="{x:Static res:Strings.Text_Delete}" AutomationProperties.Name="{x:Static res:Strings.Text_Delete}" AutomationProperties.AutomationId="DeleteTextButton" Focusable="False"
                         Visibility="{Binding TextSession, Converter={StaticResource NullVis}}">

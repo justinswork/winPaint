@@ -1,1 +1,1 @@
-Private bytes after warm-up: 190 MB; after 20 open/close cycles: 223 MB; growth 32.3 MB
+Private bytes after warm-up: 192 MB; after 20 open/close cycles: 204 MB; growth 11.6 MB
