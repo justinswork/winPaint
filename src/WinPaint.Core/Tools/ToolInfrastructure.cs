@@ -240,6 +240,30 @@ public interface IToolHost
 
     /// <summary>Notifies that tool-specific UI state (handles, overlays) changed.</summary>
     void ToolStateChanged();
+
+    /// <summary>True while a text object is open in the editor.</summary>
+    bool IsEditingText { get; }
+
+    /// <summary>
+    /// Opens the topmost live text object at a canvas point for editing (caret at the point). Returns false when
+    /// there is no text there.
+    /// </summary>
+    bool TryBeginTextEditAt(Point canvasPoint);
+
+    /// <summary>Starts editing a new text object with the given box on the active layer.</summary>
+    void BeginNewText(Rect box);
+
+    /// <summary>Ends the open text edit session (commit; blank text is discarded/deleted).</summary>
+    void CommitTextEdit();
+
+    /// <summary>Half-size of resize handles in canvas pixels at the current zoom.</summary>
+    double HandleTolerance { get; }
+
+    /// <summary>Reports that live text was flattened by a selection edit (status-bar notice).</summary>
+    void TextFlattened();
+
+    /// <summary>Requests the selection context menu at the pointer.</summary>
+    void ShowContextMenu();
 }
 
 /// <summary>A canvas tool. Tools mutate the document and commit history steps.</summary>
