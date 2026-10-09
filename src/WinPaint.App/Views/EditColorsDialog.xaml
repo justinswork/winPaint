@@ -1,0 +1,116 @@
+<Window x:Class="WinPaint.App.Views.EditColorsDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:res="clr-namespace:WinPaint.App.Resources"
+        Title="{x:Static res:Strings.Dlg_EditColors}" SizeToContent="WidthAndHeight" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        AutomationProperties.AutomationId="EditColorsDialog">
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="220" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Saturation (x) / value (y) square over the current hue -->
+        <Grid x:Name="Square" Width="220" Height="220" Cursor="Cross" MouseLeftButtonDown="OnSquareDown" MouseMove="OnSquareMove" MouseLeftButtonUp="OnSquareUp"
+              AutomationProperties.Name="Saturation and value" AutomationProperties.AutomationId="ColorSquare">
+            <Rectangle Fill="{Binding HueColor, Converter={StaticResource AppColorBrush}}" RadiusX="4" RadiusY="4" />
+            <Rectangle RadiusX="4" RadiusY="4">
+                <Rectangle.Fill>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="White" Offset="0" />
+                        <GradientStop Color="#00FFFFFF" Offset="1" />
+                    </LinearGradientBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+            <Rectangle RadiusX="4" RadiusY="4">
+                <Rectangle.Fill>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#00000000" Offset="0" />
+                        <GradientStop Color="Black" Offset="1" />
+                    </LinearGradientBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+            <Canvas IsHitTestVisible="False">
+                <Ellipse x:Name="SquareMarker" Width="12" Height="12" Stroke="White" StrokeThickness="2" />
+            </Canvas>
+        </Grid>
+
+        <!-- Hue bar -->
+        <Grid x:Name="HueBar" Grid.Column="1" Width="22" Height="220" Margin="10,0" Cursor="Hand" MouseLeftButtonDown="OnHueDown" MouseMove="OnHueMove" MouseLeftButtonUp="OnHueUp"
+              AutomationProperties.Name="Hue" AutomationProperties.AutomationId="HueBar">
+            <Rectangle RadiusX="4" RadiusY="4">
+                <Rectangle.Fill>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#FF0000" Offset="0" />
+                        <GradientStop Color="#FFFF00" Offset="0.1667" />
+                        <GradientStop Color="#00FF00" Offset="0.3333" />
+                        <GradientStop Color="#00FFFF" Offset="0.5" />
+                        <GradientStop Color="#0000FF" Offset="0.6667" />
+                        <GradientStop Color="#FF00FF" Offset="0.8333" />
+                        <GradientStop Color="#FF0000" Offset="1" />
+                    </LinearGradientBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+            <Canvas IsHitTestVisible="False">
+                <Rectangle x:Name="HueMarker" Width="26" Height="4" Canvas.Left="-2" Stroke="Black" Fill="White" />
+            </Canvas>
+        </Grid>
+
+        <!-- Numeric fields -->
+        <StackPanel Grid.Column="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="56" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition />
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Content="{x:Static res:Strings.Dlg_Hex}" Target="{Binding ElementName=HexBox}" VerticalAlignment="Center" />
+                <TextBox x:Name="HexBox" Grid.Row="0" Grid.Column="1" Text="{Binding Hex, UpdateSourceTrigger=PropertyChanged}" Margin="0,2" AutomationProperties.Name="Hex" AutomationProperties.AutomationId="HexBox" />
+                <Label Grid.Row="1" Content="{x:Static res:Strings.Dlg_Red}" Target="{Binding ElementName=RBox}" VerticalAlignment="Center" />
+                <TextBox x:Name="RBox" Grid.Row="1" Grid.Column="1" Text="{Binding Red, UpdateSourceTrigger=PropertyChanged}" Margin="0,2" AutomationProperties.Name="Red" AutomationProperties.AutomationId="RedBox" />
+                <Label Grid.Row="2" Content="{x:Static res:Strings.Dlg_Green}" Target="{Binding ElementName=GBox}" VerticalAlignment="Center" />
+                <TextBox x:Name="GBox" Grid.Row="2" Grid.Column="1" Text="{Binding Green, UpdateSourceTrigger=PropertyChanged}" Margin="0,2" AutomationProperties.Name="Green" AutomationProperties.AutomationId="GreenBox" />
+                <Label Grid.Row="3" Content="{x:Static res:Strings.Dlg_Blue}" Target="{Binding ElementName=BBox}" VerticalAlignment="Center" />
+                <TextBox x:Name="BBox" Grid.Row="3" Grid.Column="1" Text="{Binding Blue, UpdateSourceTrigger=PropertyChanged}" Margin="0,2" AutomationProperties.Name="Blue" AutomationProperties.AutomationId="BlueBox" />
+                <Label Grid.Row="4" Content="{x:Static res:Strings.Dlg_Hue}" Target="{Binding ElementName=HBox}" VerticalAlignment="Center" />
+                <TextBox x:Name="HBox" Grid.Row="4" Grid.Column="1" Text="{Binding Hue, UpdateSourceTrigger=LostFocus}" Margin="0,2" AutomationProperties.Name="Hue" AutomationProperties.AutomationId="HueBox" />
+                <Label Grid.Row="5" Content="{x:Static res:Strings.Dlg_Sat}" Target="{Binding ElementName=SBox}" VerticalAlignment="Center" />
+                <TextBox x:Name="SBox" Grid.Row="5" Grid.Column="1" Text="{Binding Saturation, UpdateSourceTrigger=LostFocus}" Margin="0,2" AutomationProperties.Name="Saturation" AutomationProperties.AutomationId="SatBox" />
+                <Label Grid.Row="6" Content="{x:Static res:Strings.Dlg_Val}" Target="{Binding ElementName=VBox}" VerticalAlignment="Center" />
+                <TextBox x:Name="VBox" Grid.Row="6" Grid.Column="1" Text="{Binding Value, UpdateSourceTrigger=LostFocus}" Margin="0,2" AutomationProperties.Name="Value" AutomationProperties.AutomationId="ValBox" />
+                <Label Grid.Row="7" Content="{x:Static res:Strings.Dlg_Alpha}" Target="{Binding ElementName=ABox}" VerticalAlignment="Center" />
+                <TextBox x:Name="ABox" Grid.Row="7" Grid.Column="1" Text="{Binding Alpha, UpdateSourceTrigger=PropertyChanged}" Margin="0,2" AutomationProperties.Name="Alpha" AutomationProperties.AutomationId="AlphaBox" />
+            </Grid>
+        </StackPanel>
+
+        <!-- Preview + buttons -->
+        <Grid Grid.Row="1" Grid.ColumnSpan="3" Margin="0,16,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel>
+                    <Border Width="64" Height="36" CornerRadius="4,0,0,4" Background="{Binding OldColor, Converter={StaticResource AppColorBrush}}" BorderBrush="{DynamicResource SwatchBorderBrush}" BorderThickness="1" />
+                    <TextBlock Text="{x:Static res:Strings.Dlg_Old}" HorizontalAlignment="Center" FontSize="11" />
+                </StackPanel>
+                <StackPanel>
+                    <Border Width="64" Height="36" CornerRadius="0,4,4,0" Background="{Binding NewColor, Converter={StaticResource AppColorBrush}}" BorderBrush="{DynamicResource SwatchBorderBrush}" BorderThickness="1" AutomationProperties.AutomationId="NewColorPreview" />
+                    <TextBlock Text="{x:Static res:Strings.Dlg_New}" HorizontalAlignment="Center" FontSize="11" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+                <Button Content="{x:Static res:Strings.Color_AddCustom}" MinWidth="88" Click="OnAddCustom" AutomationProperties.AutomationId="AddCustomButton" />
+                <Button Content="{x:Static res:Strings.OK}" IsDefault="True" MinWidth="88" Margin="8,0,0,0" Click="OnOk" AutomationProperties.AutomationId="OkButton" />
+                <Button Content="{x:Static res:Strings.Cancel}" IsCancel="True" MinWidth="88" Margin="8,0,0,0" AutomationProperties.AutomationId="CancelButton" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

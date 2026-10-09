@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AppName" xml:space="preserve"><value>winPaint</value></data>
+  <data name="Untitled" xml:space="preserve"><value>Untitled</value></data>
+  <data name="TitleFormat" xml:space="preserve"><value>{0} - winPaint</value></data>
+  <data name="DirtyPrefix" xml:space="preserve"><value>*</value></data>
+  <data name="Menu_File" xml:space="preserve"><value>_File</value></data>
+  <data name="Menu_Edit" xml:space="preserve"><value>_Edit</value></data>
+  <data name="Menu_View" xml:space="preserve"><value>_View</value></data>
+  <data name="Menu_Help" xml:space="preserve"><value>_Help</value></data>
+  <data name="File_New" xml:space="preserve"><value>_New</value></data>
+  <data name="File_Open" xml:space="preserve"><value>_Open...</value></data>
+  <data name="File_Recent" xml:space="preserve"><value>_Recent files</value></data>
+  <data name="File_NoRecent" xml:space="preserve"><value>(No recent files)</value></data>
+  <data name="File_ClearRecent" xml:space="preserve"><value>Clear recent files</value></data>
+  <data name="File_Save" xml:space="preserve"><value>_Save</value></data>
+  <data name="File_SaveAs" xml:space="preserve"><value>Save _as...</value></data>
+  <data name="File_Import" xml:space="preserve"><value>_Import to canvas</value></data>
+  <data name="File_ImportFromFile" xml:space="preserve"><value>From a _file...</value></data>
+  <data name="File_Print" xml:space="preserve"><value>_Print</value></data>
+  <data name="File_PrintDots" xml:space="preserve"><value>_Print...</value></data>
+  <data name="File_PageSetup" xml:space="preserve"><value>Page set_up...</value></data>
+  <data name="File_PrintPreview" xml:space="preserve"><value>Print pre_view</value></data>
+  <data name="File_SetDesktop" xml:space="preserve"><value>Set as desktop _background</value></data>
+  <data name="File_SetFill" xml:space="preserve"><value>_Fill</value></data>
+  <data name="File_SetTile" xml:space="preserve"><value>_Tile</value></data>
+  <data name="File_SetCenter" xml:space="preserve"><value>_Center</value></data>
+  <data name="File_Properties" xml:space="preserve"><value>Image p_roperties...</value></data>
+  <data name="File_Exit" xml:space="preserve"><value>E_xit</value></data>
+  <data name="Edit_Undo" xml:space="preserve"><value>_Undo</value></data>
+  <data name="Edit_Redo" xml:space="preserve"><value>_Redo</value></data>
+  <data name="Edit_Cut" xml:space="preserve"><value>Cu_t</value></data>
+  <data name="Edit_Copy" xml:space="preserve"><value>_Copy</value></data>
+  <data name="Edit_Paste" xml:space="preserve"><value>_Paste</value></data>
+  <data name="Edit_PasteFrom" xml:space="preserve"><value>Paste _from...</value></data>
+  <data name="Edit_SelectAll" xml:space="preserve"><value>Select _all</value></data>
+  <data name="Edit_InvertSelection" xml:space="preserve"><value>_Invert selection</value></data>
+  <data name="Edit_Delete" xml:space="preserve"><value>_Delete</value></data>
+  <data name="Edit_Crop" xml:space="preserve"><value>C_rop to selection</value></data>
+  <data name="Edit_InvertColors" xml:space="preserve"><value>Invert c_olors</value></data>
+  <data name="View_Zoom" xml:space="preserve"><value>_Zoom</value></data>
+  <data name="View_ZoomIn" xml:space="preserve"><value>Zoom _in</value></data>
+  <data name="View_ZoomOut" xml:space="preserve"><value>Zoom _out</value></data>
+  <data name="View_Zoom100" xml:space="preserve"><value>_100%</value></data>
+  <data name="View_ZoomFit" xml:space="preserve"><value>_Fit to window</value></data>
+  <data name="View_Rulers" xml:space="preserve"><value>_Rulers</value></data>
+  <data name="View_Gridlines" xml:space="preserve"><value>_Gridlines</value></data>
+  <data name="View_StatusBar" xml:space="preserve"><value>_Status bar</value></data>
+  <data name="View_FullScreen" xml:space="preserve"><value>F_ull screen</value></data>
+  <data name="View_Thumbnail" xml:space="preserve"><value>_Thumbnail</value></data>
+  <data name="View_Layers" xml:space="preserve"><value>_Layers panel</value></data>
+  <data name="View_Theme" xml:space="preserve"><value>_Theme</value></data>
+  <data name="Theme_Light" xml:space="preserve"><value>_Light</value></data>
+  <data name="Theme_Dark" xml:space="preserve"><value>_Dark</value></data>
+  <data name="Theme_System" xml:space="preserve"><value>Use _system setting</value></data>
+  <data name="Help_Shortcuts" xml:space="preserve"><value>_Keyboard shortcuts</value></data>
+  <data name="Help_About" xml:space="preserve"><value>_About winPaint</value></data>
+  <data name="Settings" xml:space="preserve"><value>Settings</value></data>
+  <data name="Group_Selection" xml:space="preserve"><value>Selection</value></data>
+  <data name="Group_Image" xml:space="preserve"><value>Image</value></data>
+  <data name="Group_Tools" xml:space="preserve"><value>Tools</value></data>
+  <data name="Group_Brushes" xml:space="preserve"><value>Brushes</value></data>
+  <data name="Group_Shapes" xml:space="preserve"><value>Shapes</value></data>
+  <data name="Group_Size" xml:space="preserve"><value>Size</value></data>
+  <data name="Group_Colors" xml:space="preserve"><value>Colors</value></data>
+  <data name="Group_Layers" xml:space="preserve"><value>Layers</value></data>
+  <data name="Sel_Rectangle" xml:space="preserve"><value>Rectangle</value></data>
+  <data name="Sel_FreeForm" xml:space="preserve"><value>Free-form</value></data>
+  <data name="Sel_SelectAll" xml:space="preserve"><value>Select all</value></data>
+  <data name="Sel_Invert" xml:space="preserve"><value>Invert selection</value></data>
+  <data name="Sel_Delete" xml:space="preserve"><value>Delete</value></data>
+  <data name="Sel_Transparent" xml:space="preserve"><value>Transparent selection</value></data>
+  <data name="Sel_Tip" xml:space="preserve"><value>Select (rectangle or free-form)</value></data>
+  <data name="Img_Crop" xml:space="preserve"><value>Crop</value></data>
+  <data name="Img_Resize" xml:space="preserve"><value>Resize and skew</value></data>
+  <data name="Img_Rotate" xml:space="preserve"><value>Rotate</value></data>
+  <data name="Img_RotateRight" xml:space="preserve"><value>Rotate right 90°</value></data>
+  <data name="Img_RotateLeft" xml:space="preserve"><value>Rotate left 90°</value></data>
+  <data name="Img_Rotate180" xml:space="preserve"><value>Rotate 180°</value></data>
+  <data name="Img_FlipVertical" xml:space="preserve"><value>Flip vertical</value></data>
+  <data name="Img_FlipHorizontal" xml:space="preserve"><value>Flip horizontal</value></data>
+  <data name="Img_InvertColors" xml:space="preserve"><value>Invert colors</value></data>
+  <data name="Img_TransparentCanvas" xml:space="preserve"><value>Transparent canvas</value></data>
+  <data name="Tool_Pencil" xml:space="preserve"><value>Pencil</value></data>
+  <data name="Tool_Fill" xml:space="preserve"><value>Fill with color</value></data>
+  <data name="Tool_Text" xml:space="preserve"><value>Text</value></data>
+  <data name="Tool_Eraser" xml:space="preserve"><value>Eraser</value></data>
+  <data name="Tool_Picker" xml:space="preserve"><value>Color picker</value></data>
+  <data name="Tool_Magnifier" xml:space="preserve"><value>Magnifier</value></data>
+  <data name="Brush_Brush" xml:space="preserve"><value>Brush</value></data>
+  <data name="Brush_CalligraphyBrush" xml:space="preserve"><value>Calligraphy brush</value></data>
+  <data name="Brush_CalligraphyPen" xml:space="preserve"><value>Calligraphy pen</value></data>
+  <data name="Brush_Airbrush" xml:space="preserve"><value>Airbrush</value></data>
+  <data name="Brush_Oil" xml:space="preserve"><value>Oil brush</value></data>
+  <data name="Brush_Crayon" xml:space="preserve"><value>Crayon</value></data>
+  <data name="Brush_Marker" xml:space="preserve"><value>Marker</value></data>
+  <data name="Brush_NaturalPencil" xml:space="preserve"><value>Natural pencil</value></data>
+  <data name="Brush_Watercolor" xml:space="preserve"><value>Watercolor brush</value></data>
+  <data name="Shape_Line" xml:space="preserve"><value>Line</value></data>
+  <data name="Shape_Curve" xml:space="preserve"><value>Curve</value></data>
+  <data name="Shape_Oval" xml:space="preserve"><value>Oval</value></data>
+  <data name="Shape_Rectangle" xml:space="preserve"><value>Rectangle</value></data>
+  <data name="Shape_RoundedRectangle" xml:space="preserve"><value>Rounded rectangle</value></data>
+  <data name="Shape_Polygon" xml:space="preserve"><value>Polygon</value></data>
+  <data name="Shape_Triangle" xml:space="preserve"><value>Triangle</value></data>
+  <data name="Shape_RightTriangle" xml:space="preserve"><value>Right triangle</value></data>
+  <data name="Shape_Diamond" xml:space="preserve"><value>Diamond</value></data>
+  <data name="Shape_Pentagon" xml:space="preserve"><value>Pentagon</value></data>
+  <data name="Shape_Hexagon" xml:space="preserve"><value>Hexagon</value></data>
+  <data name="Shape_RightArrow" xml:space="preserve"><value>Right arrow</value></data>
+  <data name="Shape_LeftArrow" xml:space="preserve"><value>Left arrow</value></data>
+  <data name="Shape_UpArrow" xml:space="preserve"><value>Up arrow</value></data>
+  <data name="Shape_DownArrow" xml:space="preserve"><value>Down arrow</value></data>
+  <data name="Shape_FourPointStar" xml:space="preserve"><value>Four-point star</value></data>
+  <data name="Shape_FivePointStar" xml:space="preserve"><value>Five-point star</value></data>
+  <data name="Shape_SixPointStar" xml:space="preserve"><value>Six-point star</value></data>
+  <data name="Shape_RoundedRectCallout" xml:space="preserve"><value>Rounded rectangular callout</value></data>
+  <data name="Shape_OvalCallout" xml:space="preserve"><value>Oval callout</value></data>
+  <data name="Shape_CloudCallout" xml:space="preserve"><value>Cloud callout</value></data>
+  <data name="Shape_Heart" xml:space="preserve"><value>Heart</value></data>
+  <data name="Shape_Lightning" xml:space="preserve"><value>Lightning</value></data>
+  <data name="Shape_Outline" xml:space="preserve"><value>Outline</value></data>
+  <data name="Shape_Fill" xml:space="preserve"><value>Fill</value></data>
+  <data name="Style_NoOutline" xml:space="preserve"><value>No outline</value></data>
+  <data name="Style_NoFill" xml:space="preserve"><value>No fill</value></data>
+  <data name="Style_Solid" xml:space="preserve"><value>Solid color</value></data>
+  <data name="Style_Crayon" xml:space="preserve"><value>Crayon</value></data>
+  <data name="Style_Marker" xml:space="preserve"><value>Marker</value></data>
+  <data name="Style_Oil" xml:space="preserve"><value>Oil</value></data>
+  <data name="Style_NaturalPencil" xml:space="preserve"><value>Natural pencil</value></data>
+  <data name="Style_Watercolor" xml:space="preserve"><value>Watercolor</value></data>
+  <data name="Size_Size" xml:space="preserve"><value>Size</value></data>
+  <data name="Size_Opacity" xml:space="preserve"><value>Opacity</value></data>
+  <data name="Size_Px" xml:space="preserve"><value>{0} px</value></data>
+  <data name="Color_Color1" xml:space="preserve"><value>Color 1</value></data>
+  <data name="Color_Color2" xml:space="preserve"><value>Color 2</value></data>
+  <data name="Color_Swap" xml:space="preserve"><value>Swap colors</value></data>
+  <data name="Color_Edit" xml:space="preserve"><value>Edit colors</value></data>
+  <data name="Color_Custom" xml:space="preserve"><value>Custom color slot</value></data>
+  <data name="Color_AddCustom" xml:space="preserve"><value>Add to custom colors</value></data>
+  <data name="Color_Palette" xml:space="preserve"><value>Palette color {0}</value></data>
+  <data name="Layer_Panel" xml:space="preserve"><value>Layers</value></data>
+  <data name="Layer_Add" xml:space="preserve"><value>Add layer</value></data>
+  <data name="Layer_Delete" xml:space="preserve"><value>Delete layer</value></data>
+  <data name="Layer_Duplicate" xml:space="preserve"><value>Duplicate layer</value></data>
+  <data name="Layer_MergeDown" xml:space="preserve"><value>Merge down</value></data>
+  <data name="Layer_MoveUp" xml:space="preserve"><value>Move layer up</value></data>
+  <data name="Layer_MoveDown" xml:space="preserve"><value>Move layer down</value></data>
+  <data name="Layer_Visibility" xml:space="preserve"><value>Show or hide layer</value></data>
+  <data name="Layer_Opacity" xml:space="preserve"><value>Layer opacity</value></data>
+  <data name="Layer_BlendMode" xml:space="preserve"><value>Blend mode</value></data>
+  <data name="Layer_Flatten" xml:space="preserve"><value>Flatten image</value></data>
+  <data name="Layer_Background" xml:space="preserve"><value>Background</value></data>
+  <data name="Layer_Name" xml:space="preserve"><value>Layer {0}</value></data>
+  <data name="Layer_FlattenConfirm" xml:space="preserve"><value>Flattening merges all layers and turns all live text into pixels. Text will no longer be editable.
+
+Flatten the image?</value></data>
+  <data name="Layer_CannotDeleteLast" xml:space="preserve"><value>The last remaining layer can&apos;t be deleted.</value></data>
+  <data name="Blend_Normal" xml:space="preserve"><value>Normal</value></data>
+  <data name="Blend_Multiply" xml:space="preserve"><value>Multiply</value></data>
+  <data name="Blend_Screen" xml:space="preserve"><value>Screen</value></data>
+  <data name="Blend_Overlay" xml:space="preserve"><value>Overlay</value></data>
+  <data name="Blend_Darken" xml:space="preserve"><value>Darken</value></data>
+  <data name="Blend_Lighten" xml:space="preserve"><value>Lighten</value></data>
+  <data name="Blend_Difference" xml:space="preserve"><value>Difference</value></data>
+  <data name="Text_Font" xml:space="preserve"><value>Font</value></data>
+  <data name="Text_Size" xml:space="preserve"><value>Font size</value></data>
+  <data name="Text_Bold" xml:space="preserve"><value>Bold</value></data>
+  <data name="Text_Italic" xml:space="preserve"><value>Italic</value></data>
+  <data name="Text_Underline" xml:space="preserve"><value>Underline</value></data>
+  <data name="Text_Strikethrough" xml:space="preserve"><value>Strikethrough</value></data>
+  <data name="Text_Transparent" xml:space="preserve"><value>Transparent background</value></data>
+  <data name="Text_Opaque" xml:space="preserve"><value>Opaque background</value></data>
+  <data name="Text_Delete" xml:space="preserve"><value>Delete text</value></data>
+  <data name="Text_Color" xml:space="preserve"><value>Text color</value></data>
+  <data name="Text_Background" xml:space="preserve"><value>Background color</value></data>
+  <data name="Status_Position" xml:space="preserve"><value>{0}, {1}px</value></data>
+  <data name="Status_Size" xml:space="preserve"><value>{0} × {1}px</value></data>
+  <data name="Status_FileSize" xml:space="preserve"><value>Size: {0}</value></data>
+  <data name="Status_EditingText" xml:space="preserve"><value>Editing text — click outside to finish</value></data>
+  <data name="Status_TextFlattened" xml:space="preserve"><value>Text in the selection was flattened</value></data>
+  <data name="Status_ZoomIn" xml:space="preserve"><value>Zoom in (Ctrl+PgUp)</value></data>
+  <data name="Status_ZoomOut" xml:space="preserve"><value>Zoom out (Ctrl+PgDn)</value></data>
+  <data name="Status_Fit" xml:space="preserve"><value>Fit to window (Ctrl+0)</value></data>
+  <data name="Status_Zoom" xml:space="preserve"><value>Zoom level</value></data>
+  <data name="Status_ResizePreview" xml:space="preserve"><value>New size: {0} × {1}px</value></data>
+  <data name="Prompt_SaveChanges" xml:space="preserve"><value>Do you want to save changes to {0}?</value></data>
+  <data name="Prompt_Save" xml:space="preserve"><value>_Save</value></data>
+  <data name="Prompt_DontSave" xml:space="preserve"><value>Do_n&apos;t save</value></data>
+  <data name="Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="OK" xml:space="preserve"><value>OK</value></data>
+  <data name="Yes" xml:space="preserve"><value>_Yes</value></data>
+  <data name="No" xml:space="preserve"><value>_No</value></data>
+  <data name="Close" xml:space="preserve"><value>Close</value></data>
+  <data name="Msg_OpenFailed" xml:space="preserve"><value>winPaint can&apos;t open this file.
+
+{0}</value></data>
+  <data name="Msg_SaveFailed" xml:space="preserve"><value>winPaint couldn&apos;t save the file.
+
+{0}</value></data>
+  <data name="Msg_RecentMissing" xml:space="preserve"><value>The file &quot;{0}&quot; can&apos;t be found. It has been removed from the recent files list.</value></data>
+  <data name="Msg_JpegTransparency" xml:space="preserve"><value>Saving as JPEG removes transparency: transparent areas will become white. Continue?</value></data>
+  <data name="Msg_GifQuality" xml:space="preserve"><value>Saving as GIF may reduce the color quality of the image (GIF supports at most 256 colors). Continue?</value></data>
+  <data name="Msg_IcoNotSquare" xml:space="preserve"><value>The image isn&apos;t square. It will be padded to a square before saving as an icon. Continue?</value></data>
+  <data name="Msg_PasteEnlarge" xml:space="preserve"><value>The image you are pasting is larger than the canvas. Do you want the canvas to be enlarged?</value></data>
+  <data name="Msg_BlackWhiteConfirm" xml:space="preserve"><value>Converting to black and white can&apos;t be undone with the Color option. Continue? (You can still use Undo.)</value></data>
+  <data name="Msg_MustSaveForWallpaper" xml:space="preserve"><value>The image must be saved before it can be set as the desktop background. Save it now?</value></data>
+  <data name="Msg_WallpaperFailed" xml:space="preserve"><value>The desktop background couldn&apos;t be changed.</value></data>
+  <data name="Msg_CrashTitle" xml:space="preserve"><value>winPaint ran into a problem</value></data>
+  <data name="Msg_Crash" xml:space="preserve"><value>Sorry, winPaint ran into an unexpected problem and needs to close.
+
+Details were written to:
+{0}
+
+Do you want to save a recovery copy of your image (PNG) first?</value></data>
+  <data name="Msg_RecoverySaved" xml:space="preserve"><value>A recovery copy was saved to:
+{0}</value></data>
+  <data name="Msg_ImageTooLarge" xml:space="preserve"><value>The image is too large.</value></data>
+  <data name="Msg_NothingToPrint" xml:space="preserve"><value>There is nothing to print.</value></data>
+  <data name="Msg_PrintFailed" xml:space="preserve"><value>Printing failed: {0}</value></data>
+  <data name="Dlg_ResizeSkew" xml:space="preserve"><value>Resize and skew</value></data>
+  <data name="Dlg_Resize" xml:space="preserve"><value>Resize</value></data>
+  <data name="Dlg_Skew" xml:space="preserve"><value>Skew (degrees)</value></data>
+  <data name="Dlg_ByPercent" xml:space="preserve"><value>_Percentage</value></data>
+  <data name="Dlg_ByPixels" xml:space="preserve"><value>Pi_xels</value></data>
+  <data name="Dlg_Horizontal" xml:space="preserve"><value>_Horizontal</value></data>
+  <data name="Dlg_Vertical" xml:space="preserve"><value>_Vertical</value></data>
+  <data name="Dlg_KeepAspect" xml:space="preserve"><value>_Maintain aspect ratio</value></data>
+  <data name="Dlg_ImageProperties" xml:space="preserve"><value>Image properties</value></data>
+  <data name="Dlg_Attributes" xml:space="preserve"><value>File attributes</value></data>
+  <data name="Dlg_LastSaved" xml:space="preserve"><value>Last saved:</value></data>
+  <data name="Dlg_SizeOnDisk" xml:space="preserve"><value>Size on disk:</value></data>
+  <data name="Dlg_Resolution" xml:space="preserve"><value>Resolution:</value></data>
+  <data name="Dlg_NotAvailable" xml:space="preserve"><value>Not available</value></data>
+  <data name="Dlg_Units" xml:space="preserve"><value>Units</value></data>
+  <data name="Dlg_Inches" xml:space="preserve"><value>_Inches</value></data>
+  <data name="Dlg_Centimeters" xml:space="preserve"><value>_Centimeters</value></data>
+  <data name="Dlg_Pixels" xml:space="preserve"><value>_Pixels</value></data>
+  <data name="Dlg_Width" xml:space="preserve"><value>_Width:</value></data>
+  <data name="Dlg_Height" xml:space="preserve"><value>H_eight:</value></data>
+  <data name="Dlg_Colors" xml:space="preserve"><value>Colors</value></data>
+  <data name="Dlg_BlackWhite" xml:space="preserve"><value>_Black and white</value></data>
+  <data name="Dlg_Color" xml:space="preserve"><value>C_olor</value></data>
+  <data name="Dlg_Default" xml:space="preserve"><value>_Default</value></data>
+  <data name="Dlg_DpiFormat" xml:space="preserve"><value>{0} DPI</value></data>
+  <data name="Dlg_EditColors" xml:space="preserve"><value>Edit colors</value></data>
+  <data name="Dlg_Red" xml:space="preserve"><value>_Red:</value></data>
+  <data name="Dlg_Green" xml:space="preserve"><value>_Green:</value></data>
+  <data name="Dlg_Blue" xml:space="preserve"><value>_Blue:</value></data>
+  <data name="Dlg_Hue" xml:space="preserve"><value>_Hue:</value></data>
+  <data name="Dlg_Sat" xml:space="preserve"><value>_Sat:</value></data>
+  <data name="Dlg_Val" xml:space="preserve"><value>_Val:</value></data>
+  <data name="Dlg_Hex" xml:space="preserve"><value>He_x:</value></data>
+  <data name="Dlg_Alpha" xml:space="preserve"><value>_Alpha:</value></data>
+  <data name="Dlg_Old" xml:space="preserve"><value>Old</value></data>
+  <data name="Dlg_New" xml:space="preserve"><value>New</value></data>
+  <data name="Dlg_IcoSizes" xml:space="preserve"><value>Icon sizes</value></data>
+  <data name="Dlg_IcoSizesPrompt" xml:space="preserve"><value>Choose the sizes to include in the icon:</value></data>
+  <data name="Dlg_PageSetup" xml:space="preserve"><value>Page setup</value></data>
+  <data name="Dlg_Orientation" xml:space="preserve"><value>Orientation</value></data>
+  <data name="Dlg_Portrait" xml:space="preserve"><value>_Portrait</value></data>
+  <data name="Dlg_Landscape" xml:space="preserve"><value>_Landscape</value></data>
+  <data name="Dlg_Margins" xml:space="preserve"><value>Margins (inches)</value></data>
+  <data name="Dlg_Left" xml:space="preserve"><value>_Left:</value></data>
+  <data name="Dlg_Right" xml:space="preserve"><value>_Right:</value></data>
+  <data name="Dlg_Top" xml:space="preserve"><value>_Top:</value></data>
+  <data name="Dlg_Bottom" xml:space="preserve"><value>_Bottom:</value></data>
+  <data name="Dlg_Centering" xml:space="preserve"><value>Centering</value></data>
+  <data name="Dlg_CenterH" xml:space="preserve"><value>_Horizontally</value></data>
+  <data name="Dlg_CenterV" xml:space="preserve"><value>_Vertically</value></data>
+  <data name="Dlg_Scaling" xml:space="preserve"><value>Scaling</value></data>
+  <data name="Dlg_AdjustTo" xml:space="preserve"><value>_Adjust to:</value></data>
+  <data name="Dlg_FitTo" xml:space="preserve"><value>_Fit to:</value></data>
+  <data name="Dlg_PagesWideBy" xml:space="preserve"><value>page(s) wide by</value></data>
+  <data name="Dlg_PagesTall" xml:space="preserve"><value>page(s) tall</value></data>
+  <data name="Dlg_NormalSize" xml:space="preserve"><value>% normal size</value></data>
+  <data name="Dlg_PrintPreview" xml:space="preserve"><value>Print preview</value></data>
+  <data name="Dlg_PrintButton" xml:space="preserve"><value>_Print...</value></data>
+  <data name="Dlg_PageOf" xml:space="preserve"><value>Page {0} of {1}</value></data>
+  <data name="Dlg_Previous" xml:space="preserve"><value>_Previous</value></data>
+  <data name="Dlg_Next" xml:space="preserve"><value>_Next</value></data>
+  <data name="Dlg_Shortcuts" xml:space="preserve"><value>Keyboard shortcuts</value></data>
+  <data name="Dlg_Shortcut" xml:space="preserve"><value>Shortcut</value></data>
+  <data name="Dlg_Action" xml:space="preserve"><value>Action</value></data>
+  <data name="Dlg_SettingsTitle" xml:space="preserve"><value>Settings</value></data>
+  <data name="Dlg_Theme" xml:space="preserve"><value>App theme</value></data>
+  <data name="Dlg_About" xml:space="preserve"><value>About</value></data>
+  <data name="Dlg_Version" xml:space="preserve"><value>Version {0}</value></data>
+  <data name="Dlg_DotNet" xml:space="preserve"><value>.NET {0}</value></data>
+  <data name="Dlg_AboutText" xml:space="preserve"><value>winPaint is a recreation of Windows 11 Paint with re-editable text. Text stays editable for as long as the image is open; saved files are always plain images.</value></data>
+  <data name="Dlg_UndoBudget" xml:space="preserve"><value>Undo memory budget (MB):</value></data>
+  <data name="Dlg_Thumbnail" xml:space="preserve"><value>Thumbnail</value></data>
+  <data name="Dlg_NewWidth" xml:space="preserve"><value>Width (px):</value></data>
+  <data name="Dlg_NewHeight" xml:space="preserve"><value>Height (px):</value></data>
+  <data name="Sc_New" xml:space="preserve"><value>New</value></data>
+  <data name="Sc_Open" xml:space="preserve"><value>Open</value></data>
+  <data name="Sc_Save" xml:space="preserve"><value>Save</value></data>
+  <data name="Sc_SaveAs" xml:space="preserve"><value>Save as</value></data>
+  <data name="Sc_Print" xml:space="preserve"><value>Print</value></data>
+  <data name="Sc_Properties" xml:space="preserve"><value>Image properties</value></data>
+  <data name="Sc_Undo" xml:space="preserve"><value>Undo</value></data>
+  <data name="Sc_Redo" xml:space="preserve"><value>Redo</value></data>
+  <data name="Sc_CutCopyPaste" xml:space="preserve"><value>Cut / Copy / Paste</value></data>
+  <data name="Sc_SelectAll" xml:space="preserve"><value>Select all</value></data>
+  <data name="Sc_Delete" xml:space="preserve"><value>Delete selection or selected text object</value></data>
+  <data name="Sc_Escape" xml:space="preserve"><value>Cancel or commit the current floating operation</value></data>
+  <data name="Sc_ResizeSkew" xml:space="preserve"><value>Resize and skew</value></data>
+  <data name="Sc_Crop" xml:space="preserve"><value>Crop</value></data>
+  <data name="Sc_Invert" xml:space="preserve"><value>Invert colors</value></data>
+  <data name="Sc_Rulers" xml:space="preserve"><value>Rulers</value></data>
+  <data name="Sc_Gridlines" xml:space="preserve"><value>Gridlines</value></data>
+  <data name="Sc_FullScreen" xml:space="preserve"><value>Full screen</value></data>
+  <data name="Sc_ZoomInOut" xml:space="preserve"><value>Zoom in / out</value></data>
+  <data name="Sc_ZoomWheel" xml:space="preserve"><value>Zoom at cursor</value></data>
+  <data name="Sc_SizeUpDown" xml:space="preserve"><value>Size up / down (brush tools); zoom otherwise</value></data>
+  <data name="Sc_Swap" xml:space="preserve"><value>Swap colors</value></data>
+  <data name="Sc_Nudge" xml:space="preserve"><value>Nudge selection 1 / 10 px</value></data>
+  <data name="Sc_TextFormat" xml:space="preserve"><value>Bold / Italic / Underline (text editing)</value></data>
+  <data name="Sc_Fit" xml:space="preserve"><value>Fit to window</value></data>
+  <data name="Sc_Actual" xml:space="preserve"><value>100% zoom</value></data>
+  <data name="Sc_NewLine" xml:space="preserve"><value>New line (text editing)</value></data>
+  <data name="Sc_TabNav" xml:space="preserve"><value>Move between toolbar controls</value></data>
+  <data name="Sc_Help" xml:space="preserve"><value>Keyboard shortcuts</value></data>
+</root>

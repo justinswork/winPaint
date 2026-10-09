@@ -1,0 +1,48 @@
+<Window x:Class="WinPaint.App.Views.ResizeSkewDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:res="clr-namespace:WinPaint.App.Resources"
+        Title="{x:Static res:Strings.Dlg_ResizeSkew}" SizeToContent="WidthAndHeight" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        AutomationProperties.AutomationId="ResizeSkewDialog">
+    <StackPanel Margin="20" Width="320">
+        <TextBlock Text="{x:Static res:Strings.Dlg_Resize}" FontWeight="SemiBold" />
+        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+            <RadioButton Content="{x:Static res:Strings.Dlg_ByPercent}" IsChecked="{Binding ByPercentage}" Margin="0,0,16,0" AutomationProperties.AutomationId="ByPercent" />
+            <RadioButton Content="{x:Static res:Strings.Dlg_ByPixels}" IsChecked="{Binding ByPercentage, Converter={StaticResource InvertBool}}" AutomationProperties.AutomationId="ByPixels" />
+        </StackPanel>
+        <Grid Margin="0,8,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="110" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Label Content="{x:Static res:Strings.Dlg_Horizontal}" Target="{Binding ElementName=H}" VerticalAlignment="Center" />
+            <TextBox x:Name="H" Grid.Column="1" Text="{Binding HorizontalValue, UpdateSourceTrigger=PropertyChanged}" Margin="0,2" AutomationProperties.AutomationId="ResizeHorizontal" />
+            <Label Grid.Row="1" Content="{x:Static res:Strings.Dlg_Vertical}" Target="{Binding ElementName=V}" VerticalAlignment="Center" />
+            <TextBox x:Name="V" Grid.Row="1" Grid.Column="1" Text="{Binding VerticalValue, UpdateSourceTrigger=PropertyChanged}" Margin="0,2" AutomationProperties.AutomationId="ResizeVertical" />
+        </Grid>
+        <CheckBox Content="{x:Static res:Strings.Dlg_KeepAspect}" IsChecked="{Binding KeepAspect}" Margin="0,8,0,0" AutomationProperties.AutomationId="KeepAspect" />
+        <TextBlock Text="{x:Static res:Strings.Dlg_Skew}" FontWeight="SemiBold" Margin="0,16,0,0" />
+        <Grid Margin="0,8,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="110" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Label Content="{x:Static res:Strings.Dlg_Horizontal}" Target="{Binding ElementName=SH}" VerticalAlignment="Center" />
+            <TextBox x:Name="SH" Grid.Column="1" Text="{Binding SkewHorizontal, UpdateSourceTrigger=PropertyChanged}" Margin="0,2" AutomationProperties.AutomationId="SkewHorizontal" />
+            <Label Grid.Row="1" Content="{x:Static res:Strings.Dlg_Vertical}" Target="{Binding ElementName=SV}" VerticalAlignment="Center" />
+            <TextBox x:Name="SV" Grid.Row="1" Grid.Column="1" Text="{Binding SkewVertical, UpdateSourceTrigger=PropertyChanged}" Margin="0,2" AutomationProperties.AutomationId="SkewVertical" />
+        </Grid>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Content="{x:Static res:Strings.OK}" IsDefault="True" MinWidth="88" Click="OnOk" AutomationProperties.AutomationId="OkButton" />
+            <Button Content="{x:Static res:Strings.Cancel}" IsCancel="True" MinWidth="88" Margin="8,0,0,0" AutomationProperties.AutomationId="CancelButton" />
+        </StackPanel>
+    </StackPanel>
+</Window>

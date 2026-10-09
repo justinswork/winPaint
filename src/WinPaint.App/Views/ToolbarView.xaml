@@ -1,0 +1,299 @@
+<UserControl x:Class="WinPaint.App.Views.ToolbarView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ctl="clr-namespace:WinPaint.App.Controls"
+             xmlns:conv="clr-namespace:WinPaint.App.Converters"
+             xmlns:vm="clr-namespace:WinPaint.App.ViewModels"
+             xmlns:res="clr-namespace:WinPaint.App.Resources"
+             xmlns:tools="clr-namespace:WinPaint.Core.Tools;assembly=WinPaint.Core"
+             xmlns:img="clr-namespace:WinPaint.Core.Imaging;assembly=WinPaint.Core"
+             xmlns:shapes="clr-namespace:WinPaint.Core.Shapes;assembly=WinPaint.Core"
+             Focusable="False">
+    <UserControl.Resources>
+        <conv:EnumEqualsConverter x:Key="EnumEq" />
+        <conv:ColorToBrushConverter x:Key="ColorBrush" />
+        <conv:EnumNameConverter x:Key="EnumName" />
+        <conv:ShapeIconConverter x:Key="ShapeIcon" />
+        <conv:BrushPreviewConverter x:Key="BrushPreview" />
+        <conv:SizePreviewConverter x:Key="SizePreview" />
+        <conv:StyleEqualsConverter x:Key="StyleEq" />
+        <conv:NullToVisibilityConverter x:Key="NullVis" />
+        <ctl:AllEqualConverter x:Key="AllEqual" />
+
+        <DataTemplate x:Key="SwatchTemplate" DataType="{x:Type vm:Swatch}">
+            <Button Style="{StaticResource SwatchButton}" Background="{Binding Color, Converter={StaticResource ColorBrush}}"
+                    Command="{Binding Tag.PickPaletteColorCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}"
+                    ToolTip="{Binding Name}" AutomationProperties.Name="{Binding Name}" Width="18" Height="18" Margin="1.5">
+                <Button.InputBindings>
+                    <MouseBinding MouseAction="RightClick" Command="{Binding Tag.PickPaletteSecondaryCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" />
+                </Button.InputBindings>
+            </Button>
+        </DataTemplate>
+
+        <ContextMenu x:Key="SelectionDropMenu">
+            <MenuItem Header="{x:Static res:Strings.Sel_Rectangle}" Command="{Binding SelectToolCommand}" CommandParameter="{x:Static tools:ToolKind.RectSelect}" AutomationProperties.AutomationId="SelRectangle" />
+            <MenuItem Header="{x:Static res:Strings.Sel_FreeForm}" Command="{Binding SelectToolCommand}" CommandParameter="{x:Static tools:ToolKind.FreeSelect}" AutomationProperties.AutomationId="SelFreeForm" />
+            <Separator />
+            <MenuItem Header="{x:Static res:Strings.Sel_SelectAll}" Command="{Binding SelectAllCommand}" InputGestureText="Ctrl+A" />
+            <MenuItem Header="{x:Static res:Strings.Sel_Invert}" Command="{Binding InvertSelectionCommand}" />
+            <MenuItem Header="{x:Static res:Strings.Sel_Delete}" Command="{Binding DeleteCommand}" InputGestureText="Del" />
+            <Separator />
+            <MenuItem Header="{x:Static res:Strings.Sel_Transparent}" IsCheckable="True" IsChecked="{Binding TransparentSelection}" AutomationProperties.AutomationId="SelTransparent" />
+        </ContextMenu>
+        <ContextMenu x:Key="RotateMenu">
+            <MenuItem Header="{x:Static res:Strings.Img_RotateRight}" Command="{Binding RotateCommand}" CommandParameter="{x:Static img:OrthoTransform.RotateRight}" AutomationProperties.AutomationId="RotateRight" />
+            <MenuItem Header="{x:Static res:Strings.Img_RotateLeft}" Command="{Binding RotateCommand}" CommandParameter="{x:Static img:OrthoTransform.RotateLeft}" AutomationProperties.AutomationId="RotateLeft" />
+            <MenuItem Header="{x:Static res:Strings.Img_Rotate180}" Command="{Binding RotateCommand}" CommandParameter="{x:Static img:OrthoTransform.Rotate180}" />
+            <MenuItem Header="{x:Static res:Strings.Img_FlipVertical}" Command="{Binding RotateCommand}" CommandParameter="{x:Static img:OrthoTransform.FlipVertical}" />
+            <MenuItem Header="{x:Static res:Strings.Img_FlipHorizontal}" Command="{Binding RotateCommand}" CommandParameter="{x:Static img:OrthoTransform.FlipHorizontal}" />
+            <Separator />
+            <MenuItem Header="{x:Static res:Strings.Img_InvertColors}" Command="{Binding InvertColorsCommand}" InputGestureText="Ctrl+Shift+I" />
+            <MenuItem Header="{x:Static res:Strings.Img_TransparentCanvas}" Command="{Binding ToggleTransparentCanvasCommand}" IsChecked="{Binding IsTransparentCanvas, Mode=OneWay}" />
+        </ContextMenu>
+        <ContextMenu x:Key="OutlineMenu" ItemsSource="{Binding Source={x:Static vm:MainViewModel.AllStyles}}">
+            <ContextMenu.ItemContainerStyle>
+                <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
+                    <Setter Property="Header" Value="{Binding Converter={StaticResource EnumName}, ConverterParameter=Style}" />
+                    <Setter Property="Command" Value="{Binding DataContext.SetOutlineCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                    <Setter Property="CommandParameter" Value="{Binding}" />
+                </Style>
+            </ContextMenu.ItemContainerStyle>
+        </ContextMenu>
+        <ContextMenu x:Key="FillMenu" ItemsSource="{Binding Source={x:Static vm:MainViewModel.AllStyles}}">
+            <ContextMenu.ItemContainerStyle>
+                <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
+                    <Setter Property="Header" Value="{Binding Converter={StaticResource EnumName}, ConverterParameter=Style}" />
+                    <Setter Property="Command" Value="{Binding DataContext.SetFillCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                    <Setter Property="CommandParameter" Value="{Binding}" />
+                </Style>
+            </ContextMenu.ItemContainerStyle>
+        </ContextMenu>
+    </UserControl.Resources>
+
+    <ctl:CollapsingToolbarPanel KeyboardNavigation.TabNavigation="Continue">
+        <!-- Selection -->
+        <ctl:ToolbarGroup Header="{x:Static res:Strings.Group_Selection}" Icon="{StaticResource Icon.Select}" Priority="3" AutomationProperties.AutomationId="GroupSelection">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Button Style="{StaticResource ToolButton}" Command="{Binding SelectSelectionToolCommand}" ctl:ToolState.IsActive="{Binding IsSelectionToolActive}"
+                        ToolTip="{x:Static res:Strings.Sel_Tip}" AutomationProperties.Name="{x:Static res:Strings.Sel_Rectangle}" AutomationProperties.AutomationId="ToolSelect" MinWidth="40" MinHeight="40">
+                    <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Select}" Width="22" Height="22" />
+                </Button>
+                <Button Style="{StaticResource ToolButton}" ctl:DropDown.OpensMenu="True" ContextMenu="{StaticResource SelectionDropMenu}" MinWidth="16" Padding="0"
+                        ToolTip="{x:Static res:Strings.Group_Selection}" AutomationProperties.Name="Selection options" AutomationProperties.AutomationId="SelectionDropDown">
+                    <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.ChevronDown}" Width="9" Height="9" />
+                </Button>
+            </StackPanel>
+        </ctl:ToolbarGroup>
+        <Border Style="{StaticResource GroupSeparator}" />
+
+        <!-- Image -->
+        <ctl:ToolbarGroup Header="{x:Static res:Strings.Group_Image}" Icon="{StaticResource Icon.Crop}" Priority="2" AutomationProperties.AutomationId="GroupImage">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Button Style="{StaticResource ToolButton}" Command="{Binding CropCommand}" ToolTip="Crop (Ctrl+Shift+X)" AutomationProperties.Name="{x:Static res:Strings.Img_Crop}" AutomationProperties.AutomationId="CropButton">
+                    <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Crop}" />
+                </Button>
+                <Button Style="{StaticResource ToolButton}" Command="{Binding ResizeSkewCommand}" ToolTip="Resize and skew (Ctrl+W)" AutomationProperties.Name="{x:Static res:Strings.Img_Resize}" AutomationProperties.AutomationId="ResizeButton">
+                    <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Resize}" />
+                </Button>
+                <Button Style="{StaticResource ToolButton}" ctl:DropDown.OpensMenu="True" ContextMenu="{StaticResource RotateMenu}" ToolTip="{x:Static res:Strings.Img_Rotate}" AutomationProperties.Name="{x:Static res:Strings.Img_Rotate}" AutomationProperties.AutomationId="RotateButton">
+                    <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Rotate}" />
+                </Button>
+            </StackPanel>
+        </ctl:ToolbarGroup>
+        <Border Style="{StaticResource GroupSeparator}" />
+
+        <!-- Tools -->
+        <ctl:ToolbarGroup Header="{x:Static res:Strings.Group_Tools}" Icon="{StaticResource Icon.Pencil}" Priority="6" AutomationProperties.AutomationId="GroupTools">
+            <UniformGrid Rows="2" Columns="3">
+                <Button Style="{StaticResource ToolButton}" Command="{Binding SelectToolCommand}" CommandParameter="{x:Static tools:ToolKind.Pencil}" ctl:ToolState.IsActive="{Binding ActiveToolKind, Converter={StaticResource EnumEq}, ConverterParameter=Pencil}"
+                        ToolTip="{x:Static res:Strings.Tool_Pencil}" AutomationProperties.Name="{x:Static res:Strings.Tool_Pencil}" AutomationProperties.AutomationId="ToolPencil">
+                    <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Pencil}" />
+                </Button>
+                <Button Style="{StaticResource ToolButton}" Command="{Binding SelectToolCommand}" CommandParameter="{x:Static tools:ToolKind.Fill}" ctl:ToolState.IsActive="{Binding ActiveToolKind, Converter={StaticResource EnumEq}, ConverterParameter=Fill}"
+                        ToolTip="{x:Static res:Strings.Tool_Fill}" AutomationProperties.Name="{x:Static res:Strings.Tool_Fill}" AutomationProperties.AutomationId="ToolFill">
+                    <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Bucket}" />
+                </Button>
+                <Button Style="{StaticResource ToolButton}" Command="{Binding SelectToolCommand}" CommandParameter="{x:Static tools:ToolKind.Text}" ctl:ToolState.IsActive="{Binding ActiveToolKind, Converter={StaticResource EnumEq}, ConverterParameter=Text}"
+                        ToolTip="{x:Static res:Strings.Tool_Text}" AutomationProperties.Name="{x:Static res:Strings.Tool_Text}" AutomationProperties.AutomationId="ToolText">
+                    <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Text}" />
+                </Button>
+                <Button Style="{StaticResource ToolButton}" Command="{Binding SelectToolCommand}" CommandParameter="{x:Static tools:ToolKind.Eraser}" ctl:ToolState.IsActive="{Binding ActiveToolKind, Converter={StaticResource EnumEq}, ConverterParameter=Eraser}"
+                        ToolTip="{x:Static res:Strings.Tool_Eraser}" AutomationProperties.Name="{x:Static res:Strings.Tool_Eraser}" AutomationProperties.AutomationId="ToolEraser">
+                    <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Eraser}" />
+                </Button>
+                <Button Style="{StaticResource ToolButton}" Command="{Binding SelectToolCommand}" CommandParameter="{x:Static tools:ToolKind.Picker}" ctl:ToolState.IsActive="{Binding ActiveToolKind, Converter={StaticResource EnumEq}, ConverterParameter=Picker}"
+                        ToolTip="{x:Static res:Strings.Tool_Picker}" AutomationProperties.Name="{x:Static res:Strings.Tool_Picker}" AutomationProperties.AutomationId="ToolPicker">
+                    <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Picker}" />
+                </Button>
+                <Button Style="{StaticResource ToolButton}" Command="{Binding SelectToolCommand}" CommandParameter="{x:Static tools:ToolKind.Magnifier}" ctl:ToolState.IsActive="{Binding ActiveToolKind, Converter={StaticResource EnumEq}, ConverterParameter=Magnifier}"
+                        ToolTip="{x:Static res:Strings.Tool_Magnifier}" AutomationProperties.Name="{x:Static res:Strings.Tool_Magnifier}" AutomationProperties.AutomationId="ToolMagnifier">
+                    <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Magnifier}" />
+                </Button>
+            </UniformGrid>
+        </ctl:ToolbarGroup>
+        <Border Style="{StaticResource GroupSeparator}" />
+
+        <!-- Brushes -->
+        <ctl:ToolbarGroup Header="{x:Static res:Strings.Group_Brushes}" Icon="{StaticResource Icon.Brush}" Priority="5" AutomationProperties.AutomationId="GroupBrushes">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Button Style="{StaticResource ToolButton}" Command="{Binding SelectToolCommand}" CommandParameter="{x:Static tools:ToolKind.Brush}" ctl:ToolState.IsActive="{Binding ActiveToolKind, Converter={StaticResource EnumEq}, ConverterParameter=Brush}"
+                        ToolTip="{Binding BrushKind, Converter={StaticResource EnumName}, ConverterParameter=Brush}" AutomationProperties.Name="{x:Static res:Strings.Group_Brushes}" AutomationProperties.AutomationId="ToolBrush" MinWidth="40" MinHeight="40">
+                    <Image Source="{Binding BrushKind, Converter={StaticResource BrushPreview}}" Width="40" Height="20" />
+                </Button>
+                <ToggleButton x:Name="BrushDrop" Style="{StaticResource ToolToggle}" MinWidth="16" Padding="0" ToolTip="{x:Static res:Strings.Group_Brushes}" AutomationProperties.Name="Brush options" AutomationProperties.AutomationId="BrushDropDown">
+                    <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.ChevronDown}" Width="9" Height="9" />
+                </ToggleButton>
+                <Popup IsOpen="{Binding IsChecked, ElementName=BrushDrop}" StaysOpen="False" PlacementTarget="{Binding ElementName=BrushDrop}" Placement="Bottom" AllowsTransparency="True">
+                    <Border Padding="6" CornerRadius="8" Background="{DynamicResource ToolbarBackgroundBrush}" BorderBrush="{DynamicResource SeparatorBrush}" BorderThickness="1">
+                        <ItemsControl Tag="{Binding}" ItemsSource="{Binding Source={x:Static vm:MainViewModel.AllBrushes}}" AutomationProperties.AutomationId="BrushGallery">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Style="{StaticResource ToolButton}" HorizontalContentAlignment="Left" ctl:PopupClose.ClosesPopup="True"
+                                            Command="{Binding Tag.SelectBrushCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}"
+                                            AutomationProperties.Name="{Binding Converter={StaticResource EnumName}, ConverterParameter=Brush}" AutomationProperties.AutomationId="{Binding StringFormat=Brush_{0}}">
+                                        <StackPanel Orientation="Horizontal" Width="190">
+                                            <Image Source="{Binding Converter={StaticResource BrushPreview}}" Width="48" Height="24" />
+                                            <TextBlock Text="{Binding Converter={StaticResource EnumName}, ConverterParameter=Brush}" Margin="8,0,0,0" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border>
+                </Popup>
+            </StackPanel>
+        </ctl:ToolbarGroup>
+        <Border Style="{StaticResource GroupSeparator}" />
+
+        <!-- Shapes -->
+        <ctl:ToolbarGroup Header="{x:Static res:Strings.Group_Shapes}" Icon="{StaticResource Icon.Outline}" Priority="4" AutomationProperties.AutomationId="GroupShapes">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <ScrollViewer Height="76" Width="196" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Focusable="False">
+                    <ItemsControl Tag="{Binding}" ItemsSource="{Binding ShapeItems}" AutomationProperties.AutomationId="ShapeGallery" Focusable="False">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Width="182" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource ToolButton}" MinWidth="24" MinHeight="24" Width="24" Height="24" Padding="2" Margin="1"
+                                        Command="{Binding Tag.SelectShapeCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding Kind}" ctl:ToolState.IsActive="{Binding IsActive}"
+                                        ToolTip="{Binding Kind, Converter={StaticResource EnumName}, ConverterParameter=Shape}"
+                                        AutomationProperties.Name="{Binding Kind, Converter={StaticResource EnumName}, ConverterParameter=Shape}" AutomationProperties.AutomationId="{Binding Kind, StringFormat=Shape_{0}}">
+                                    <Path Data="{Binding Kind, Converter={StaticResource ShapeIcon}}" Stroke="{DynamicResource IconBrush}" StrokeThickness="1.1" Stretch="Uniform" Width="16" Height="16" StrokeLineJoin="Round" />
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+                <StackPanel Margin="4,0,0,0" VerticalAlignment="Center">
+                    <Button Style="{StaticResource ToolButton}" ctl:DropDown.OpensMenu="True" ContextMenu="{StaticResource OutlineMenu}" HorizontalContentAlignment="Left"
+                            ToolTip="{x:Static res:Strings.Shape_Outline}" AutomationProperties.Name="{x:Static res:Strings.Shape_Outline}" AutomationProperties.AutomationId="OutlineButton">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Outline}" Width="14" Height="14" />
+                            <TextBlock Text="{x:Static res:Strings.Shape_Outline}" Margin="6,0,4,0" FontSize="12" VerticalAlignment="Center" />
+                            <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.ChevronDown}" Width="8" Height="8" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource ToolButton}" ctl:DropDown.OpensMenu="True" ContextMenu="{StaticResource FillMenu}" HorizontalContentAlignment="Left"
+                            ToolTip="{x:Static res:Strings.Shape_Fill}" AutomationProperties.Name="{x:Static res:Strings.Shape_Fill}" AutomationProperties.AutomationId="FillButton">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Fill}" Width="14" Height="14" />
+                            <TextBlock Text="{x:Static res:Strings.Shape_Fill}" Margin="6,0,4,0" FontSize="12" VerticalAlignment="Center" />
+                            <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.ChevronDown}" Width="8" Height="8" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </ctl:ToolbarGroup>
+        <Border Style="{StaticResource GroupSeparator}" />
+
+        <!-- Size / opacity -->
+        <ctl:ToolbarGroup Header="{x:Static res:Strings.Group_Size}" Icon="{StaticResource Icon.Size}" Priority="1" AutomationProperties.AutomationId="GroupSize">
+            <Grid VerticalAlignment="Center">
+                <ToggleButton x:Name="SizeDrop" Style="{StaticResource ToolToggle}" ToolTip="Size (Ctrl+Plus / Ctrl+Minus)" AutomationProperties.Name="{x:Static res:Strings.Size_Size}" AutomationProperties.AutomationId="SizeButton" MinWidth="44" MinHeight="40">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Size}" Width="20" Height="20" />
+                        <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.ChevronDown}" Width="8" Height="8" Margin="4,0,0,0" />
+                    </StackPanel>
+                </ToggleButton>
+                <Popup IsOpen="{Binding IsChecked, ElementName=SizeDrop}" StaysOpen="False" PlacementTarget="{Binding ElementName=SizeDrop}" Placement="Bottom" AllowsTransparency="True">
+                    <Border Padding="12" CornerRadius="8" Background="{DynamicResource ToolbarBackgroundBrush}" BorderBrush="{DynamicResource SeparatorBrush}" BorderThickness="1" Width="260">
+                        <StackPanel>
+                            <TextBlock Text="{x:Static res:Strings.Size_Size}" FontWeight="SemiBold" />
+                            <Grid Margin="0,6,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="56" />
+                                </Grid.ColumnDefinitions>
+                                <Slider Minimum="1" Maximum="100" IsSnapToTickEnabled="True" TickFrequency="1" Value="{Binding ToolSize}" IsEnabled="{Binding ToolHasSize}" VerticalAlignment="Center"
+                                        AutomationProperties.Name="{x:Static res:Strings.Size_Size}" AutomationProperties.AutomationId="SizeSlider" />
+                                <TextBox Grid.Column="1" Margin="6,0,0,0" Text="{Binding ToolSize, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding ToolHasSize}" AutomationProperties.Name="Size in pixels" AutomationProperties.AutomationId="SizeBox" />
+                            </Grid>
+                            <Border Height="44" Margin="0,8,0,0" CornerRadius="4" Background="{DynamicResource PanelBackgroundBrush}">
+                                <Ellipse Width="{Binding ToolSize, Converter={StaticResource SizePreview}}" Height="{Binding ToolSize, Converter={StaticResource SizePreview}}"
+                                         Fill="{Binding PrimaryColor, Converter={StaticResource ColorBrush}}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <TextBlock Text="{x:Static res:Strings.Size_Opacity}" FontWeight="SemiBold" Margin="0,10,0,0" />
+                            <Grid Margin="0,6,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="56" />
+                                </Grid.ColumnDefinitions>
+                                <Slider Minimum="1" Maximum="100" IsSnapToTickEnabled="True" TickFrequency="1" Value="{Binding OpacityPercent}" VerticalAlignment="Center"
+                                        AutomationProperties.Name="{x:Static res:Strings.Size_Opacity}" AutomationProperties.AutomationId="OpacitySlider" />
+                                <TextBox Grid.Column="1" Margin="6,0,0,0" Text="{Binding OpacityPercent, StringFormat={}{0:0}, UpdateSourceTrigger=LostFocus}" AutomationProperties.Name="Opacity percent" AutomationProperties.AutomationId="OpacityBox" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+            </Grid>
+        </ctl:ToolbarGroup>
+        <Border Style="{StaticResource GroupSeparator}" />
+
+        <!-- Colors -->
+        <ctl:ToolbarGroup Header="{x:Static res:Strings.Group_Colors}" Icon="{StaticResource Icon.Palette}" Priority="7" AutomationProperties.AutomationId="GroupColors">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Button Style="{StaticResource ToolButton}" Command="{Binding SetActiveSlotCommand}" CommandParameter="1" ctl:ToolState.IsActive="{Binding ActiveColorSlot, Converter={StaticResource EnumEq}, ConverterParameter=1}"
+                        ToolTip="{x:Static res:Strings.Color_Color1}" AutomationProperties.Name="{x:Static res:Strings.Color_Color1}" AutomationProperties.AutomationId="Color1Button" MinWidth="44">
+                    <Ellipse Width="30" Height="30" Fill="{Binding PrimaryColor, Converter={StaticResource ColorBrush}}" Stroke="{DynamicResource SwatchBorderBrush}" />
+                </Button>
+                <Button Style="{StaticResource ToolButton}" Command="{Binding SetActiveSlotCommand}" CommandParameter="2" ctl:ToolState.IsActive="{Binding ActiveColorSlot, Converter={StaticResource EnumEq}, ConverterParameter=2}"
+                        ToolTip="{x:Static res:Strings.Color_Color2}" AutomationProperties.Name="{x:Static res:Strings.Color_Color2}" AutomationProperties.AutomationId="Color2Button" MinWidth="44">
+                    <Ellipse Width="30" Height="30" Fill="{Binding SecondaryColor, Converter={StaticResource ColorBrush}}" Stroke="{DynamicResource SwatchBorderBrush}" />
+                </Button>
+                <Button Style="{StaticResource ToolButton}" Command="{Binding SwapColorsCommand}" ToolTip="Swap colors (X)" AutomationProperties.Name="{x:Static res:Strings.Color_Swap}" AutomationProperties.AutomationId="SwapColorsButton" MinWidth="24" Padding="2">
+                    <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Swap}" Width="14" Height="14" />
+                </Button>
+                <StackPanel Margin="6,0,0,0" VerticalAlignment="Center">
+                    <ItemsControl Tag="{Binding}" ItemsSource="{Binding Palette}" ItemTemplate="{StaticResource SwatchTemplate}" Focusable="False" AutomationProperties.AutomationId="Palette">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Rows="2" Columns="10" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                    <ItemsControl Tag="{Binding}" ItemsSource="{Binding CustomColors}" ItemTemplate="{StaticResource SwatchTemplate}" Focusable="False" AutomationProperties.AutomationId="CustomColors">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Rows="1" Columns="10" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </StackPanel>
+                <Button Style="{StaticResource ToolButton}" Command="{Binding EditColorsCommand}" ToolTip="{x:Static res:Strings.Color_Edit}" AutomationProperties.Name="{x:Static res:Strings.Color_Edit}" AutomationProperties.AutomationId="EditColorsButton" Margin="6,0,0,0">
+                    <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Palette}" Width="22" Height="22" />
+                </Button>
+            </StackPanel>
+        </ctl:ToolbarGroup>
+        <Border Style="{StaticResource GroupSeparator}" />
+
+        <!-- Layers toggle -->
+        <ctl:ToolbarGroup Header="{x:Static res:Strings.Group_Layers}" Icon="{StaticResource Icon.Layers}" Priority="0" AutomationProperties.AutomationId="GroupLayers">
+            <ToggleButton Style="{StaticResource ToolToggle}" IsChecked="{Binding ShowLayers}" ToolTip="{x:Static res:Strings.Layer_Panel}" AutomationProperties.Name="{x:Static res:Strings.Layer_Panel}" AutomationProperties.AutomationId="LayersToggle" MinWidth="40" MinHeight="40" VerticalAlignment="Center">
+                <Path Style="{StaticResource IconPath}" Data="{StaticResource Icon.Layers}" Width="22" Height="22" />
+            </ToggleButton>
+        </ctl:ToolbarGroup>
+    </ctl:CollapsingToolbarPanel>
+</UserControl>

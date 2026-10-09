@@ -1,0 +1,6 @@
+root = true
+
+[*.cs]
+# User-facing format strings come from Strings.resx (localizable) and are used once per UI action;
+# caching CompositeFormat instances would add complexity without measurable benefit.
+dotnet_diagnostic.CA1863.severity = none
