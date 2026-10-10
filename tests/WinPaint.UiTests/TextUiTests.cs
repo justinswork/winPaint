@@ -77,13 +77,15 @@ public class TextUiTests
 
         using (var s = AppSession.Launch(file))
         {
+            // The project is embedded in the PNG (docs/specs/wpp-format.md), so the text is editable again.
             AppSession.WaitUntil(() => s.State("file") == file, TimeSpan.FromSeconds(20));
-            Assert.Equal(0, s.StateInt("texts"));
+            Assert.Equal(1, s.StateInt("texts"));
+            Assert.Equal(0, s.StateInt("undo"));
+            Assert.Equal("0", s.State("dirty"));
             s.Invoke("ToolSelect");
             s.Run("dblclick 230 160");
-            Assert.Equal("0", s.State("editing"));
-            Assert.Equal(0, s.StateInt("undo"));
-            s.Snapshot("U-05_5_reopened_plain");
+            Assert.Equal("1", s.State("editing"));
+            s.Snapshot("U-05_5_reopened_editable");
         }
     }
 
@@ -222,15 +224,16 @@ public class TextUiTests
             s.Snapshot("DoD_09_saved");
         }
 
-        // Close, reopen the PNG: double-clicking the text does nothing.
+        // Close, reopen the PNG: the embedded project brings the text back, still editable.
         using (var s = AppSession.Launch(file))
         {
             AppSession.WaitUntil(() => s.State("file") == file, TimeSpan.FromSeconds(20));
-            Assert.Equal(0, s.StateInt("texts"));
+            Assert.Equal(1, s.StateInt("texts"));
             s.Invoke("ToolSelect");
             s.Run("dblclick 470 190");
-            Assert.Equal("0", s.State("editing"));
-            s.Snapshot("DoD_10_reopened_not_editable");
+            Assert.Equal("1", s.State("editing"));
+            Assert.Equal("Final v2", s.State("editText"));
+            s.Snapshot("DoD_10_reopened_editable");
         }
     }
 }

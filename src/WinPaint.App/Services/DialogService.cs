@@ -7,6 +7,7 @@ using WinPaint.App.ViewModels;
 using WinPaint.App.Views;
 using WinPaint.Core.Imaging;
 using WinPaint.Core.Imaging.Codecs;
+using WinPaint.Core.Projects;
 
 namespace WinPaint.App.Services;
 
@@ -24,16 +25,17 @@ public sealed class DialogService(Window owner, SettingsService settings) : IDia
     }
 
     /// <inheritdoc/>
-    public (string Path, ImageFormat Format)? PickSaveFile(string suggestedName, ImageFormat format)
+    public SaveTarget? PickSaveFile(string suggestedName, ImageFormat format, bool project, bool allowProject)
     {
         var order = ImageFormats.SaveFilterOrder;
+        var projectIndex = order.Count + 1;
         var dlg = new SaveFileDialog
         {
-            Filter = ImageFormats.SaveFilter,
-            FilterIndex = Math.Max(0, order.ToList().IndexOf(format)) + 1,
+            Filter = ImageFormats.SaveFilter + (allowProject ? $"|{Strings.Filter_Project}|*{ProjectFormat.FileExtension}" : string.Empty),
+            FilterIndex = project && allowProject ? projectIndex : Math.Max(0, order.ToList().IndexOf(format)) + 1,
             FileName = Path.GetFileNameWithoutExtension(suggestedName),
             AddExtension = true,
-            DefaultExt = ImageFormats.DefaultExtension(format),
+            DefaultExt = project && allowProject ? ProjectFormat.FileExtension : ImageFormats.DefaultExtension(format),
             OverwritePrompt = true,
         };
         if (dlg.ShowDialog(owner) != true)
@@ -41,15 +43,20 @@ public sealed class DialogService(Window owner, SettingsService settings) : IDia
             return null;
         }
 
-        var chosen = order[Math.Clamp(dlg.FilterIndex - 1, 0, order.Count - 1)];
-        var byExt = ImageFormats.FromPath(dlg.FileName);
         var path = dlg.FileName;
+        if (allowProject && (ProjectFiles.IsProjectPath(path) || (dlg.FilterIndex == projectIndex && ImageFormats.FromPath(path) is null)))
+        {
+            return new SaveTarget(ProjectFiles.IsProjectPath(path) ? path : path + ProjectFormat.FileExtension, ImageFormat.Png, IsProject: true);
+        }
+
+        var chosen = order[Math.Clamp(dlg.FilterIndex - 1, 0, order.Count - 1)];
+        var byExt = ImageFormats.FromPath(path);
         if (byExt is null)
         {
             path += ImageFormats.DefaultExtension(chosen);
         }
 
-        return (path, byExt ?? chosen);
+        return new SaveTarget(path, byExt ?? chosen, IsProject: false);
     }
 
     /// <inheritdoc/>

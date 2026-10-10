@@ -73,6 +73,7 @@
                     <Separator />
                     <MenuItem Header="{x:Static res:Strings.File_Save}" Command="{Binding SaveCommand}" InputGestureText="Ctrl+S" AutomationProperties.AutomationId="FileSave" />
                     <MenuItem Header="{x:Static res:Strings.File_SaveAs}" Command="{Binding SaveAsCommand}" InputGestureText="F12" AutomationProperties.AutomationId="FileSaveAs" />
+                    <MenuItem Header="{x:Static res:Strings.File_SaveAsPlain}" Command="{Binding SaveAsPlainCommand}" AutomationProperties.AutomationId="FileSaveAsPlain" />
                     <Separator />
                     <MenuItem Header="{x:Static res:Strings.File_Import}">
                         <MenuItem Header="{x:Static res:Strings.File_ImportFromFile}" Command="{Binding PasteFromCommand}" />
@@ -251,7 +252,10 @@
                 <TextBlock Grid.Column="1" Text="{Binding SelectionText}" VerticalAlignment="Center" AutomationProperties.AutomationId="StatusSelection" />
                 <TextBlock Grid.Column="2" Text="{Binding ImageSizeText}" VerticalAlignment="Center" AutomationProperties.AutomationId="StatusImageSize" />
                 <TextBlock Grid.Column="3" Text="{Binding FileSizeText}" VerticalAlignment="Center" AutomationProperties.AutomationId="StatusFileSize" />
-                <TextBlock Grid.Column="4" Text="{Binding StatusNotice}" VerticalAlignment="Center" Foreground="{DynamicResource AccentBrush}" TextTrimming="CharacterEllipsis" AutomationProperties.AutomationId="StatusNotice" />
+                <DockPanel Grid.Column="4" LastChildFill="True">
+                    <Button DockPanel.Dock="Right" Command="{Binding RestoreProjectCommand}" Content="{x:Static res:Strings.Status_RestoreProject}" Visibility="{Binding CanRestoreProject, Converter={StaticResource BoolVis}}" Padding="8,0" Margin="8,0,0,0" VerticalAlignment="Center" AutomationProperties.AutomationId="RestoreProjectButton" />
+                    <TextBlock Text="{Binding StatusNotice}" ToolTip="{Binding StatusNotice}" VerticalAlignment="Center" Foreground="{DynamicResource AccentBrush}" TextTrimming="CharacterEllipsis" AutomationProperties.AutomationId="StatusNotice" />
+                </DockPanel>
                 </Grid>
             </DockPanel>
         </Border>

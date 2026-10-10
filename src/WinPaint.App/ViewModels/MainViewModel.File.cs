@@ -7,6 +7,7 @@ using WinPaint.App.Services;
 using WinPaint.Core.Document;
 using WinPaint.Core.Imaging;
 using WinPaint.Core.Imaging.Codecs;
+using WinPaint.Core.Projects;
 
 namespace WinPaint.App.ViewModels;
 
@@ -14,6 +15,8 @@ namespace WinPaint.App.ViewModels;
 public sealed partial class MainViewModel
 {
     private bool _jpegWarned;
+    private bool _notEditableWarned;
+    private ProjectReadResult? _outsideProject;
 
     /// <summary>Recent files (most recent first, max 10).</summary>
     [ObservableProperty]
@@ -23,8 +26,19 @@ public sealed partial class MainViewModel
     [ObservableProperty]
     public partial bool IsBusy { get; set; }
 
-    /// <summary>Format of the open file.</summary>
+    /// <summary>
+    /// True when the image has an embedded winPaint version that wasn't restored because the picture was changed
+    /// outside winPaint (WPP spec §6.5).
+    /// </summary>
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RestoreProjectCommand))]
+    public partial bool CanRestoreProject { get; set; }
+
+    /// <summary>Format of the open file (null for a project or a new image).</summary>
     public ImageFormat? FileFormat { get; private set; }
+
+    /// <summary>True when the open file is a winPaint project (.wpp).</summary>
+    public bool IsProjectFile { get; private set; }
 
     /// <summary>Time the file was last saved (or its modification time when opened).</summary>
     public DateTime? LastSaved { get; private set; }
@@ -37,10 +51,8 @@ public sealed partial class MainViewModel
             return;
         }
 
-        FileFormat = null;
-        LastSaved = null;
-        _jpegWarned = false;
         ReplaceDocument(CreateBlankDocument(), null);
+        ResetFileState(null, null, project: false);
     }
 
     [RelayCommand]
@@ -99,11 +111,11 @@ public sealed partial class MainViewModel
     /// <summary>Opens a file without prompting (command line / after the prompt). Returns false on error.</summary>
     public async Task<bool> OpenPathAsync(string path)
     {
-        DecodedImage decoded;
+        OpenedFile opened;
         IsBusy = true;
         try
         {
-            decoded = await Task.Run(() => ImageCodec.Decode(path));
+            opened = await Task.Run(() => ProjectFiles.Open(path));
         }
         catch (ImageOpenException ex)
         {
@@ -116,12 +128,55 @@ public sealed partial class MainViewModel
         }
 
         var full = Path.GetFullPath(path);
-        ReplaceDocument(PaintDocument.FromImage(decoded.Pixels, decoded.DpiX, decoded.DpiY), full);
-        FileFormat = ImageFormats.FromPath(full);
-        LastSaved = File.GetLastWriteTime(full);
-        _jpegWarned = FileFormat == ImageFormat.Jpeg;
+        var doc = opened.UseProject
+            ? PaintDocument.FromState(opened.Project!.State)
+            : PaintDocument.FromImage(opened.Image!.Pixels, opened.Image.DpiX, opened.Image.DpiY);
+        ReplaceDocument(doc, full);
+        var project = opened.Image is null;
+        ResetFileState(project ? null : ImageFormats.FromPath(full), File.GetLastWriteTime(full), project);
+        _outsideProject = opened.Status == EmbeddedProjectStatus.ChangedOutside ? opened.Project : null;
+        CanRestoreProject = _outsideProject is not null;
+        StatusNotice = opened.Status switch
+        {
+            EmbeddedProjectStatus.ChangedOutside => Strings.Status_ChangedOutside,
+            EmbeddedProjectStatus.Ignored => string.Format(CultureInfo.CurrentCulture, Strings.Status_ProjectIgnored, opened.IgnoredReason),
+            _ when opened.UseProject && opened.Project!.IsNewerMinorVersion => Strings.Status_NewerVersion,
+            _ when opened.UseProject && opened.Project!.DamagedParts > 0 => Strings.Status_DamagedParts,
+            _ => null,
+        };
         AddRecent(full);
         return true;
+    }
+
+    /// <summary>
+    /// Opens the winPaint version embedded in an image that was changed outside winPaint, as a new unsaved document.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanRestoreProject))]
+    private async Task RestoreProjectAsync()
+    {
+        var project = _outsideProject;
+        if (project is null || !await ConfirmDiscardAsync())
+        {
+            return;
+        }
+
+        var doc = PaintDocument.FromState(project.State);
+        doc.History.Reset(doc.CaptureState(), markSaved: false);
+        ReplaceDocument(doc, null);
+        ResetFileState(null, null, project: false);
+        UpdateTitle();
+    }
+
+    private void ResetFileState(ImageFormat? format, DateTime? lastSaved, bool project)
+    {
+        FileFormat = format;
+        IsProjectFile = project;
+        LastSaved = lastSaved;
+        _jpegWarned = format == ImageFormat.Jpeg;
+        _notEditableWarned = false;
+        _outsideProject = null;
+        CanRestoreProject = false;
+        StatusNotice = null;
     }
 
     [RelayCommand]
@@ -130,68 +185,102 @@ public sealed partial class MainViewModel
     [RelayCommand]
     private async Task SaveAsAsync() => await SaveCoreAsync(saveAs: true);
 
+    [RelayCommand]
+    private async Task SaveAsPlainAsync() => await SaveCoreAsync(saveAs: true, plain: true);
+
     /// <summary>Saves (or Save As when untitled). Returns false when cancelled or failed.</summary>
-    public async Task<bool> SaveCoreAsync(bool saveAs)
+    public async Task<bool> SaveCoreAsync(bool saveAs, bool plain = false)
     {
         PrepareForCommand();
-        string path;
-        ImageFormat format;
+        SaveTarget target;
         if (saveAs || FilePath is null)
         {
             var name = FilePath is null ? Strings.Untitled + ".png" : Path.GetFileName(FilePath);
-            var pick = _dialogs.PickSaveFile(name, FileFormat ?? ImageFormat.Png);
+            var pick = _dialogs.PickSaveFile(name, FileFormat ?? ImageFormat.Png, project: IsProjectFile && !plain, allowProject: !plain);
             if (pick is null)
             {
                 return false;
             }
 
-            (path, format) = pick.Value;
+            target = pick;
         }
         else
         {
-            path = FilePath;
-            format = FileFormat ?? ImageFormats.FromPath(path) ?? ImageFormat.Png;
+            target = new SaveTarget(FilePath, FileFormat ?? ImageFormats.FromPath(FilePath) ?? ImageFormat.Png, IsProjectFile);
         }
 
-        return await SaveToAsync(path, format);
+        return await SaveToAsync(target, plain);
     }
 
-    /// <summary>Writes the flattened image to <paramref name="path"/> (the in-memory document is unchanged).</summary>
-    public async Task<bool> SaveToAsync(string path, ImageFormat format)
+    /// <summary>
+    /// Writes the document. Images get the project embedded when it has something worth keeping and the format
+    /// allows it (WPP spec §7.1); <paramref name="plain"/> writes a plain image regardless.
+    /// </summary>
+    public async Task<bool> SaveToAsync(SaveTarget target, bool plain)
     {
+        ArgumentNullException.ThrowIfNull(target);
+        var (path, format) = (target.Path, target.Format);
+        var state = Document.CaptureState();
         var flat = Document.Flatten();
         var options = new EncodeOptions { DpiX = Document.DpiX, DpiY = Document.DpiY };
-        switch (format)
+        var worth = !plain && _settingsService.Current.KeepTextEditable && ProjectFormat.IsWorthKeeping(state);
+        var embed = !target.IsProject && worth && ProjectEmbedding.CanEmbed(format);
+        if (!target.IsProject)
         {
-            case ImageFormat.Jpeg when flat.HasTransparency() && !_jpegWarned:
-                if (!_dialogs.Confirm(Strings.Msg_JpegTransparency))
+            switch (format)
+            {
+                case ImageFormat.Jpeg when flat.HasTransparency() && !_jpegWarned:
+                    if (!_dialogs.Confirm(Strings.Msg_JpegTransparency))
+                    {
+                        return false;
+                    }
+
+                    break;
+                case ImageFormat.Gif:
+                    if (!_dialogs.Confirm(Strings.Msg_GifQuality))
+                    {
+                        return false;
+                    }
+
+                    break;
+                case ImageFormat.Ico:
+                    var sizes = _dialogs.PickIcoSizes();
+                    if (sizes is null || (flat.Width != flat.Height && !_dialogs.Confirm(Strings.Msg_IcoNotSquare)))
+                    {
+                        return false;
+                    }
+
+                    options = options with { IcoSizes = sizes };
+                    break;
+            }
+
+            if (worth && !embed && !_notEditableWarned)
+            {
+                if (!_dialogs.Confirm(Strings.Msg_NotEditableFormat))
                 {
                     return false;
                 }
 
-                break;
-            case ImageFormat.Gif:
-                if (!_dialogs.Confirm(Strings.Msg_GifQuality))
-                {
-                    return false;
-                }
-
-                break;
-            case ImageFormat.Ico:
-                var sizes = _dialogs.PickIcoSizes();
-                if (sizes is null || (flat.Width != flat.Height && !_dialogs.Confirm(Strings.Msg_IcoNotSquare)))
-                {
-                    return false;
-                }
-
-                options = options with { IcoSizes = sizes };
-                break;
+                _notEditableWarned = true;
+            }
         }
 
+        var writeOptions = new ProjectWriteOptions { GeneratorVersion = typeof(MainViewModel).Assembly.GetName().Version?.ToString(3) ?? "1.0.0" };
         IsBusy = true;
         try
         {
-            await Task.Run(() => ImageCodec.Encode(flat, path, format, options));
+            await Task.Run(() =>
+            {
+                var bytes = target.IsProject
+                    ? ProjectFiles.EncodeProject(state, flat, writeOptions)
+                    : ProjectFiles.EncodeImage(flat, format, options, embed ? state : null, writeOptions);
+                ProjectFiles.WriteAtomic(path, bytes);
+            });
+        }
+        catch (ProjectFormatException)
+        {
+            _dialogs.ShowError(Strings.Msg_ProjectTooLarge);
+            return false;
         }
         catch (IOException ex)
         {
@@ -208,14 +297,22 @@ public sealed partial class MainViewModel
             IsBusy = false;
         }
 
-        if (format == ImageFormat.Jpeg)
+        if (format == ImageFormat.Jpeg && !target.IsProject)
         {
             _jpegWarned = true;
         }
 
         FilePath = Path.GetFullPath(path);
-        FileFormat = format;
+        FileFormat = target.IsProject ? null : format;
+        IsProjectFile = target.IsProject;
         LastSaved = DateTime.Now;
+        _outsideProject = null;
+        CanRestoreProject = false;
+        var hidden = ProjectFormat.HiddenLayerCount(state);
+        StatusNotice = target.IsProject ? Strings.Status_ProjectSaved
+            : !embed ? null
+            : hidden > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.Status_ProjectEmbeddedHidden, hidden)
+            : Strings.Status_ProjectEmbedded;
         Document.History.MarkSaved();
         UpdateTitle();
         UpdateFileSizeText();
@@ -301,7 +398,15 @@ public sealed partial class MainViewModel
             }
         }
 
-        if (!Wallpaper.Set(FilePath!, style))
+        var file = FilePath!;
+        if (IsProjectFile)
+        {
+            // Windows can't show a .wpp: hand it a flattened copy.
+            file = Path.Combine(Path.GetDirectoryName(_settingsService.FilePath) ?? Path.GetTempPath(), "wallpaper.png");
+            ImageCodec.Encode(Document.Flatten(), file, ImageFormat.Png);
+        }
+
+        if (!Wallpaper.Set(file, style))
         {
             _dialogs.ShowError(Strings.Msg_WallpaperFailed);
         }
@@ -355,7 +460,17 @@ public sealed partial class MainViewModel
             ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "winPaint Recovery");
         Directory.CreateDirectory(dir);
         var path = Path.Combine(dir, $"recovery-{DateTime.Now:yyyyMMdd-HHmmss}.png");
-        ImageCodec.Encode(Document.Flatten(), path, ImageFormat.Png);
+        var flat = Document.Flatten();
+        try
+        {
+            var state = Document.CaptureState();
+            ProjectFiles.WriteAtomic(path, ProjectFiles.EncodeImage(flat, ImageFormat.Png, null, ProjectFormat.IsWorthKeeping(state) ? state : null));
+        }
+        catch (ProjectFormatException)
+        {
+            ImageCodec.Encode(flat, path, ImageFormat.Png);
+        }
+
         return path;
     }
 

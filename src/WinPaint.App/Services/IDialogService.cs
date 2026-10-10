@@ -23,6 +23,12 @@ public enum SaveChoice
 /// <param name="SkewVertical">Vertical skew in degrees.</param>
 public sealed record ResizeSkewResult(int Width, int Height, double SkewHorizontal, double SkewVertical);
 
+/// <summary>Where and how to save.</summary>
+/// <param name="Path">Full path.</param>
+/// <param name="Format">Image format (ignored for a project).</param>
+/// <param name="IsProject">True for a winPaint project (.wpp).</param>
+public sealed record SaveTarget(string Path, ImageFormat Format, bool IsProject);
+
 /// <summary>Image properties dialog input.</summary>
 public sealed record ImagePropertiesInfo(int Width, int Height, double DpiX, double DpiY, DateTime? LastSaved, long? SizeOnDisk);
 
@@ -38,8 +44,11 @@ public interface IDialogService
     /// <summary>Shows the open-file dialog.</summary>
     string? PickOpenFile();
 
-    /// <summary>Shows the save dialog.</summary>
-    (string Path, ImageFormat Format)? PickSaveFile(string suggestedName, ImageFormat format);
+    /// <summary>
+    /// Save dialog. <paramref name="project"/> preselects the winPaint project type; <paramref name="allowProject"/>
+    /// offers it at all.
+    /// </summary>
+    SaveTarget? PickSaveFile(string suggestedName, ImageFormat format, bool project, bool allowProject);
 
     /// <summary>Asks whether to save changes.</summary>
     SaveChoice AskSaveChanges(string documentName);

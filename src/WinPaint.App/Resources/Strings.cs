@@ -188,6 +188,12 @@ public static class Strings
     /// <summary>Resource string Dlg_KeepAspect.</summary>
     public static string Dlg_KeepAspect => ResourceManager.GetString("Dlg_KeepAspect", Culture) ?? "Dlg_KeepAspect";
 
+    /// <summary>Resource string Dlg_KeepEditable.</summary>
+    public static string Dlg_KeepEditable => ResourceManager.GetString("Dlg_KeepEditable", Culture) ?? "Dlg_KeepEditable";
+
+    /// <summary>Resource string Dlg_KeepEditableHelp.</summary>
+    public static string Dlg_KeepEditableHelp => ResourceManager.GetString("Dlg_KeepEditableHelp", Culture) ?? "Dlg_KeepEditableHelp";
+
     /// <summary>Resource string Dlg_Landscape.</summary>
     public static string Dlg_Landscape => ResourceManager.GetString("Dlg_Landscape", Culture) ?? "Dlg_Landscape";
 
@@ -268,6 +274,9 @@ public static class Strings
 
     /// <summary>Resource string Dlg_Sat.</summary>
     public static string Dlg_Sat => ResourceManager.GetString("Dlg_Sat", Culture) ?? "Dlg_Sat";
+
+    /// <summary>Resource string Dlg_Saving.</summary>
+    public static string Dlg_Saving => ResourceManager.GetString("Dlg_Saving", Culture) ?? "Dlg_Saving";
 
     /// <summary>Resource string Dlg_Scaling.</summary>
     public static string Dlg_Scaling => ResourceManager.GetString("Dlg_Scaling", Culture) ?? "Dlg_Scaling";
@@ -392,6 +401,9 @@ public static class Strings
     /// <summary>Resource string File_SaveAs.</summary>
     public static string File_SaveAs => ResourceManager.GetString("File_SaveAs", Culture) ?? "File_SaveAs";
 
+    /// <summary>Resource string File_SaveAsPlain.</summary>
+    public static string File_SaveAsPlain => ResourceManager.GetString("File_SaveAsPlain", Culture) ?? "File_SaveAsPlain";
+
     /// <summary>Resource string File_SetCenter.</summary>
     public static string File_SetCenter => ResourceManager.GetString("File_SetCenter", Culture) ?? "File_SetCenter";
 
@@ -403,6 +415,9 @@ public static class Strings
 
     /// <summary>Resource string File_SetTile.</summary>
     public static string File_SetTile => ResourceManager.GetString("File_SetTile", Culture) ?? "File_SetTile";
+
+    /// <summary>Resource string Filter_Project.</summary>
+    public static string Filter_Project => ResourceManager.GetString("Filter_Project", Culture) ?? "Filter_Project";
 
     /// <summary>Resource string Group_Brushes.</summary>
     public static string Group_Brushes => ResourceManager.GetString("Group_Brushes", Culture) ?? "Group_Brushes";
@@ -548,6 +563,9 @@ public static class Strings
     /// <summary>Resource string Msg_MustSaveForWallpaper.</summary>
     public static string Msg_MustSaveForWallpaper => ResourceManager.GetString("Msg_MustSaveForWallpaper", Culture) ?? "Msg_MustSaveForWallpaper";
 
+    /// <summary>Resource string Msg_NotEditableFormat.</summary>
+    public static string Msg_NotEditableFormat => ResourceManager.GetString("Msg_NotEditableFormat", Culture) ?? "Msg_NotEditableFormat";
+
     /// <summary>Resource string Msg_NothingToPrint.</summary>
     public static string Msg_NothingToPrint => ResourceManager.GetString("Msg_NothingToPrint", Culture) ?? "Msg_NothingToPrint";
 
@@ -559,6 +577,9 @@ public static class Strings
 
     /// <summary>Resource string Msg_PrintFailed.</summary>
     public static string Msg_PrintFailed => ResourceManager.GetString("Msg_PrintFailed", Culture) ?? "Msg_PrintFailed";
+
+    /// <summary>Resource string Msg_ProjectTooLarge.</summary>
+    public static string Msg_ProjectTooLarge => ResourceManager.GetString("Msg_ProjectTooLarge", Culture) ?? "Msg_ProjectTooLarge";
 
     /// <summary>Resource string Msg_RecentMissing.</summary>
     public static string Msg_RecentMissing => ResourceManager.GetString("Msg_RecentMissing", Culture) ?? "Msg_RecentMissing";
@@ -815,8 +836,14 @@ public static class Strings
     /// <summary>Resource string Size_Size.</summary>
     public static string Size_Size => ResourceManager.GetString("Size_Size", Culture) ?? "Size_Size";
 
+    /// <summary>Resource string Status_ChangedOutside.</summary>
+    public static string Status_ChangedOutside => ResourceManager.GetString("Status_ChangedOutside", Culture) ?? "Status_ChangedOutside";
+
     /// <summary>Resource string Status_ClipboardFallback.</summary>
     public static string Status_ClipboardFallback => ResourceManager.GetString("Status_ClipboardFallback", Culture) ?? "Status_ClipboardFallback";
+
+    /// <summary>Resource string Status_DamagedParts.</summary>
+    public static string Status_DamagedParts => ResourceManager.GetString("Status_DamagedParts", Culture) ?? "Status_DamagedParts";
 
     /// <summary>Resource string Status_EditingText.</summary>
     public static string Status_EditingText => ResourceManager.GetString("Status_EditingText", Culture) ?? "Status_EditingText";
@@ -827,11 +854,29 @@ public static class Strings
     /// <summary>Resource string Status_Fit.</summary>
     public static string Status_Fit => ResourceManager.GetString("Status_Fit", Culture) ?? "Status_Fit";
 
+    /// <summary>Resource string Status_NewerVersion.</summary>
+    public static string Status_NewerVersion => ResourceManager.GetString("Status_NewerVersion", Culture) ?? "Status_NewerVersion";
+
     /// <summary>Resource string Status_Position.</summary>
     public static string Status_Position => ResourceManager.GetString("Status_Position", Culture) ?? "Status_Position";
 
+    /// <summary>Resource string Status_ProjectEmbedded.</summary>
+    public static string Status_ProjectEmbedded => ResourceManager.GetString("Status_ProjectEmbedded", Culture) ?? "Status_ProjectEmbedded";
+
+    /// <summary>Resource string Status_ProjectEmbeddedHidden.</summary>
+    public static string Status_ProjectEmbeddedHidden => ResourceManager.GetString("Status_ProjectEmbeddedHidden", Culture) ?? "Status_ProjectEmbeddedHidden";
+
+    /// <summary>Resource string Status_ProjectIgnored.</summary>
+    public static string Status_ProjectIgnored => ResourceManager.GetString("Status_ProjectIgnored", Culture) ?? "Status_ProjectIgnored";
+
+    /// <summary>Resource string Status_ProjectSaved.</summary>
+    public static string Status_ProjectSaved => ResourceManager.GetString("Status_ProjectSaved", Culture) ?? "Status_ProjectSaved";
+
     /// <summary>Resource string Status_ResizePreview.</summary>
     public static string Status_ResizePreview => ResourceManager.GetString("Status_ResizePreview", Culture) ?? "Status_ResizePreview";
+
+    /// <summary>Resource string Status_RestoreProject.</summary>
+    public static string Status_RestoreProject => ResourceManager.GetString("Status_RestoreProject", Culture) ?? "Status_RestoreProject";
 
     /// <summary>Resource string Status_Size.</summary>
     public static string Status_Size => ResourceManager.GetString("Status_Size", Culture) ?? "Status_Size";

@@ -19,6 +19,7 @@
   <data name="File_ClearRecent" xml:space="preserve"><value>Clear recent files</value></data>
   <data name="File_Save" xml:space="preserve"><value>_Save</value></data>
   <data name="File_SaveAs" xml:space="preserve"><value>Save _as...</value></data>
+  <data name="File_SaveAsPlain" xml:space="preserve"><value>Save as _plain image...</value></data>
   <data name="File_Import" xml:space="preserve"><value>_Import to canvas</value></data>
   <data name="File_ImportFromFile" xml:space="preserve"><value>From a _file...</value></data>
   <data name="File_Print" xml:space="preserve"><value>_Print</value></data>
@@ -189,6 +190,14 @@ Flatten the image?</value></data>
   <data name="Status_Zoom" xml:space="preserve"><value>Zoom level</value></data>
   <data name="Status_ResizePreview" xml:space="preserve"><value>New size: {0} × {1}px</value></data>
   <data name="Status_ClipboardFallback" xml:space="preserve"><value>The Windows clipboard is unavailable right now; the image is kept inside winPaint.</value></data>
+  <data name="Status_ProjectEmbedded" xml:space="preserve"><value>Editable text is saved inside this image</value></data>
+  <data name="Status_ProjectEmbeddedHidden" xml:space="preserve"><value>Editable text is saved inside this image (includes {0} hidden layers)</value></data>
+  <data name="Status_ProjectSaved" xml:space="preserve"><value>Saved as a winPaint project</value></data>
+  <data name="Status_ChangedOutside" xml:space="preserve"><value>This image was changed outside winPaint, so its editable text wasn&apos;t restored.</value></data>
+  <data name="Status_RestoreProject" xml:space="preserve"><value>Restore the winPaint version</value></data>
+  <data name="Status_ProjectIgnored" xml:space="preserve"><value>The editable text in this image couldn&apos;t be restored. {0}</value></data>
+  <data name="Status_NewerVersion" xml:space="preserve"><value>This file was saved by a newer winPaint; some information may not be kept if you save it.</value></data>
+  <data name="Status_DamagedParts" xml:space="preserve"><value>Parts of this project were damaged and were left out.</value></data>
   <data name="Prompt_SaveChanges" xml:space="preserve"><value>Do you want to save changes to {0}?</value></data>
   <data name="Prompt_Save" xml:space="preserve"><value>_Save</value></data>
   <data name="Prompt_DontSave" xml:space="preserve"><value>Do_n&apos;t save</value></data>
@@ -207,6 +216,10 @@ Flatten the image?</value></data>
   <data name="Msg_JpegTransparency" xml:space="preserve"><value>Saving as JPEG removes transparency: transparent areas will become white. Continue?</value></data>
   <data name="Msg_GifQuality" xml:space="preserve"><value>Saving as GIF may reduce the color quality of the image (GIF supports at most 256 colors). Continue?</value></data>
   <data name="Msg_IcoNotSquare" xml:space="preserve"><value>The image isn&apos;t square. It will be padded to a square before saving as an icon. Continue?</value></data>
+  <data name="Msg_NotEditableFormat" xml:space="preserve"><value>Text won&apos;t stay editable in this format. To keep it editable, save as PNG, JPEG, GIF, TIFF or as a winPaint project (.wpp).
+
+Save anyway?</value></data>
+  <data name="Msg_ProjectTooLarge" xml:space="preserve"><value>This image is too large to keep its text editable inside the file. Save it as a winPaint project (.wpp) instead, or save a plain image.</value></data>
   <data name="Msg_PasteEnlarge" xml:space="preserve"><value>The image you are pasting is larger than the canvas. Do you want the canvas to be enlarged?</value></data>
   <data name="Msg_BlackWhiteConfirm" xml:space="preserve"><value>Converting to black and white can&apos;t be undone with the Color option. Continue? (You can still use Undo.)</value></data>
   <data name="Msg_MustSaveForWallpaper" xml:space="preserve"><value>The image must be saved before it can be set as the desktop background. Save it now?</value></data>
@@ -294,6 +307,10 @@ Do you want to save a recovery copy of your image (PNG) first?</value></data>
   <data name="Dlg_DotNet" xml:space="preserve"><value>.NET {0}</value></data>
   <data name="Dlg_AboutText" xml:space="preserve"><value>winPaint is a recreation of Windows 11 Paint with re-editable text. Text stays editable for as long as the image is open; saved files are always plain images.</value></data>
   <data name="Dlg_UndoBudget" xml:space="preserve"><value>Undo memory budget (MB):</value></data>
+  <data name="Dlg_Saving" xml:space="preserve"><value>Saving</value></data>
+  <data name="Dlg_KeepEditable" xml:space="preserve"><value>Keep text editable in saved images</value></data>
+  <data name="Dlg_KeepEditableHelp" xml:space="preserve"><value>winPaint stores layers and editable text inside PNG, JPEG, GIF and TIFF files it saves. Other apps still see a normal image. Turn this off to always save plain images.</value></data>
+  <data name="Filter_Project" xml:space="preserve"><value>winPaint project (*.wpp)</value></data>
   <data name="Dlg_Thumbnail" xml:space="preserve"><value>Thumbnail</value></data>
   <data name="Dlg_NewWidth" xml:space="preserve"><value>Width (px):</value></data>
   <data name="Dlg_NewHeight" xml:space="preserve"><value>Height (px):</value></data>

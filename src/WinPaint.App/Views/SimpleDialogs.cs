@@ -171,6 +171,12 @@ public static class SettingsDialog
         budget.Width = 100;
         root.Children.Add(budget);
 
+        root.Children.Add(DialogKit.Heading(Strings.Dlg_Saving));
+        var keep = new CheckBox { Content = Strings.Dlg_KeepEditable, IsChecked = settings.Current.KeepTextEditable };
+        System.Windows.Automation.AutomationProperties.SetAutomationId(keep, "KeepTextEditable");
+        root.Children.Add(keep);
+        root.Children.Add(new TextBlock { Text = Strings.Dlg_KeepEditableHelp, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(24, 2, 0, 0), Foreground = (Brush)w.FindResource("SubtleTextBrush") });
+
         root.Children.Add(DialogKit.Heading(Strings.Dlg_About));
         var version = typeof(SettingsDialog).Assembly.GetName().Version?.ToString(3) ?? "1.0.0";
         root.Children.Add(new TextBlock { Text = Strings.AppName, FontSize = 16, FontWeight = FontWeights.SemiBold });
@@ -180,6 +186,7 @@ public static class SettingsDialog
         root.Children.Add(DialogKit.Buttons(w, cancel: false, ok: () =>
         {
             settings.Current.UndoBudgetMb = (int)Math.Clamp(DialogKit.Parse(budget, settings.Current.UndoBudgetMb), 64, 65536);
+            settings.Current.KeepTextEditable = keep.IsChecked == true;
             settings.Save();
         }));
         w.Content = root;

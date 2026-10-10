@@ -109,6 +109,9 @@ public sealed class AppSettings
     /// <summary>Undo memory budget (MB).</summary>
     public int UndoBudgetMb { get; set; } = 1024;
 
+    /// <summary>Embed the project (layers, editable text) in PNG/JPEG/GIF/TIFF files when there is something to keep.</summary>
+    public bool KeepTextEditable { get; set; } = true;
+
     /// <summary>Page setup: landscape.</summary>
     public bool PrintLandscape { get; set; }
 

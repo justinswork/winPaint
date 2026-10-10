@@ -42,8 +42,8 @@ public static class ImageFormats
 
     /// <summary>Open dialog filter covering every readable format.</summary>
     public const string OpenFilter =
-        "All Picture Files|*.png;*.jpg;*.jpeg;*.jpe;*.jfif;*.bmp;*.dib;*.gif;*.tif;*.tiff;*.ico|" +
-        "PNG (*.png)|*.png|JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|Bitmap (*.bmp;*.dib)|*.bmp;*.dib|" +
+        "All Picture Files|*.png;*.jpg;*.jpeg;*.jpe;*.jfif;*.bmp;*.dib;*.gif;*.tif;*.tiff;*.ico;*.wpp|" +
+        "winPaint project (*.wpp)|*.wpp|PNG (*.png)|*.png|JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|Bitmap (*.bmp;*.dib)|*.bmp;*.dib|" +
         "GIF (*.gif)|*.gif|TIFF (*.tif;*.tiff)|*.tif;*.tiff|ICO (*.ico)|*.ico|All Files (*.*)|*.*";
 
     /// <summary>Save dialog filter (order matches <see cref="SaveFilterOrder"/>).</summary>

@@ -69,3 +69,15 @@
   users go behind a Labs page in Settings (off by default). Built-in effects/tools/commands use internal contracts
   shaped like the draft API so they could be opened up later. The WPP `extensions/` mechanism stays and is used by
   winPaint's own optional features with `app.winpaint.*` ids.
+- **2026-10-09** Project format implemented (docs/specs/wpp-format.md). Saved PNG/JPEG/GIF/TIFF files embed the project
+  when there is something worth keeping, so reopening restores layers and editable text; this supersedes the original
+  "saved files are always flat, text is editable only until the image is closed" behavior. U-05 and the DoD
+  walk-through now expect the text to be editable after reopening; *Save as plain image* keeps the old behavior.
+- **2026-10-09** The native Save dialog can't host a check box or notes, so *Save as plain image* is a separate File
+  menu command, the "Includes N hidden layers" note is shown in the status bar after saving, and the
+  "Text won't stay editable in this format" warning for BMP/ICO is a confirmation before saving (once per document).
+- **2026-10-09** Embedded-project fingerprints are computed by decoding the encoded bytes with the same decoder used
+  on open, so lossy JPEG and quantized GIF output match exactly.
+- **2026-10-09** Recovery copies (crash handler) embed the project when there is something worth keeping.
+- **2026-10-09** T-WYSIWYG fails at 50 % zoom on this machine at the moment (132 differing pixels); it fails the same way
+  on the commit before the project-format work, so it is unrelated and tracked separately.
