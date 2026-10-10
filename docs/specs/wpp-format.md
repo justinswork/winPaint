@@ -29,7 +29,7 @@ The same **project container** (section 3) is used in two places:
 | | Standalone `.wpp` | Embedded in an image |
 |---|---|---|
 | Created by | File ▸ Save as ▸ *winPaint project (.wpp)* | Saving as PNG, TIFF, GIF or JPEG when the image has something worth keeping (section 7.1) |
-| Other apps see | An unknown file (or the preview, via a future Explorer thumbnail handler) | A normal image |
+| Other apps see | An unknown file | A normal image |
 | Contains a preview | Yes (`preview.png`, `thumbnail.png`) | No (the image itself is the preview) |
 | Survives sharing | Yes, as long as the file isn't converted | Yes, unless a service strips private image data; then it degrades to a plain image |
 
@@ -161,18 +161,16 @@ other plugins' data through the plugin API.
 
 `displayName` and `infoUrl` let winPaint tell users which plugin a file came from and where to get it.
 
-**`policy`** is the rule winPaint follows *when the plugin isn't installed*. The plugin writes it when it saves its
-data, so a copy of winPaint without the plugin can still act sensibly:
+**`policy`** tells a copy of winPaint that *doesn't have the plugin installed* what to do with the plugin's data when
+it saves the document. The plugin writes it together with its data:
 
 | Policy | Meaning (when the plugin is missing) |
 |---|---|
-| `keep` (default) | Always carry the data along unchanged. For data that stays true whatever happens to the image (tags, author, notes). |
-| `discard-on-geometry-change` | Drop the data if the canvas is rotated, flipped, resized, skewed, cropped or its size changes. |
-| `discard-on-pixel-change` | Drop the data if any pixel or text changes (any undoable edit). |
-| `discard-on-any-change` | Drop the data on any change at all, including layer renames and visibility. |
+| `keep` (default; also used when the field is absent or unrecognized) | Carry the data along unchanged. |
+| `discard` | Leave the data out when the document is saved. Opening, viewing and editing don't remove it; only saving does. |
 
 When the plugin *is* installed, it is told about every change through the plugin API and decides for itself; the
-policy only applies in its absence. Region anchors (5.3) are handled automatically regardless of policy.
+policy only applies in its absence. Anchors (5.3) are maintained by winPaint whether or not the plugin is installed.
 
 ### 5.3 Anchors: attaching data to parts of the image
 
@@ -186,8 +184,7 @@ winPaint can maintain it even when the plugin is missing; the plugin's own files
   { "id": "a3", "extension": "com.contoso.translate","target": { "kind": "text",  "textId": "c41d…" } },
   { "id": "a4", "extension": "com.contoso.hotspots", "target": { "kind": "region",
       "shape": { "type": "polygon", "points": [[100,100],[300,100],[300,200],[100,200]] },
-      "layerId": null,
-      "onGeometryChange": "transform" } }
+      "layerId": null } }
 ]
 ```
 
@@ -196,7 +193,7 @@ winPaint can maintain it even when the plugin is missing; the plugin's own files
 | `document` | The whole project | Nothing. |
 | `layer` | One layer | Deleted when the layer is deleted. Merge down moves it to the lower layer; duplicating a layer does not copy it. |
 | `text` | One live text object | Deleted when the text object is deleted or flattened into pixels (selection edits, Flatten image, merging a blended layer). |
-| `region` | An area of the canvas, optionally tied to a layer | Rotate/flip/resize/skew apply the same matrix to `shape`. Crop and canvas resize translate it; a region fully outside the new canvas is deleted. If `onGeometryChange` is `discard`, any of those operations deletes it instead. |
+| `region` | An area of the canvas, optionally tied to a layer | Rotate/flip/resize/skew apply the same matrix to `shape`. Crop and canvas resize translate it; a region fully outside the new canvas is deleted. |
 
 `shape.type` is `rect` (`[x, y, width, height]`) or `polygon` (points in canvas pixels). When an anchor is deleted,
 its id disappears from the manifest; a plugin that later finds its files referring to a missing anchor ignores them.
@@ -268,7 +265,9 @@ keeping, the Save dialog says *"Text won't stay editable in this format"* and su
   opacity/blend/visibility, or plugin data. Otherwise it writes a plain image, byte-for-byte as today.
 - **Setting:** *Keep text editable in saved images* (on by default). Off = images are always plain.
 - **File ▸ Save as** adds *winPaint project (.wpp)* and a **Save as plain image** check box (one-off, doesn't change the
-  setting).
+  setting). A plain image contains no project, no hidden layers and **no plugin data**.
+- A project is not tied to any image format. A document opened from a `.wpp` saves back to that `.wpp` with Save; Save
+  as can write it as any supported image format (embedding the project where the format allows) or as another `.wpp`.
 - After saving with an embedded project, the status bar shows *"Editable text is saved inside this image"*.
 - Hidden layers are included (the project is a full copy). Because embedded data travels with the image, the Save as
   dialog shows *"Includes N hidden layers"* when there are any.
@@ -333,13 +332,14 @@ keeping, the Save dialog says *"Text won't stay editable in this format"* and su
   isn't part of the submitted package; the plugin model must be checked against its current wording before that spec
   is finalized.
 
-## 11. Open questions
+## 11. Resolved review decisions
 
-1. Should Explorer show `.wpp` thumbnails (a thumbnail-provider shell extension in the MSIX package)?
-2. Should plugin data be included when the user picks **Save as plain image**? (Draft: no; plain means plain.)
-3. Should a project remember which image format it came from, so a `.wpp` can be re-exported to the same format?
-4. Is 256 px the right thumbnail size, or should `.wpp` also include a mid-size preview for fast opening of huge
-   images?
+1. Plugin data policy is limited to `keep` (default) and `discard`; there are no change-based policies, and anchors
+   have no per-anchor rules.
+2. `.wpp` thumbnails: no Explorer thumbnail handler in 1.0. `.wpp` files carry `preview.png` and a 256 px
+   `thumbnail.png` for winPaint's own use and for other tools.
+3. **Save as plain image** never includes plugin data.
+4. A project is not associated with an image type; it can be saved as any image format (7.1).
 
 ## Appendix A. Example `.wpp` listing
 
