@@ -199,7 +199,8 @@ winPaint can maintain it even when the plugin is missing; the plugin's own files
 | `text` | One live text object | Deleted when the text object is deleted or flattened into pixels (selection edits, Flatten image, merging a blended layer). |
 | `region` | An area of the canvas, optionally tied to a layer | Rotate/flip/resize/skew apply the same matrix to `shape`. Crop and canvas resize translate it; a region fully outside the new canvas is deleted. |
 
-`shape.type` is `rect` (`[x, y, width, height]`) or `polygon` (points in canvas pixels). When an anchor is deleted,
+`shape.type` is `rect` (with `"rect": [x, y, width, height]`) or `polygon` (with `"points"`, at least 3, in canvas
+pixels). A rectangle stays a rectangle under quarter turns and flips and becomes a polygon under other transforms. When an anchor is deleted,
 its id disappears from the manifest; a plugin that later finds its files referring to a missing anchor ignores them.
 
 ### 5.4 Users control plugin data
@@ -234,7 +235,7 @@ A private tag **65129** (`WinPaintProject`), type `UNDEFINED`, in IFD0, holding 
 ### 6.3 JPEG
 
 One or more **APP11** segments, each starting with the identifier `WINPAINT\0` (9 bytes), then a 2-byte big-endian
-sequence number and a 2-byte total count, then up to 65,520 bytes of payload. Segments follow the APP0/APP1 segments.
+sequence number (starting at 1) and a 2-byte total count, then up to 65,520 bytes of payload. Segments follow the APP0/APP1 segments.
 Readers concatenate the payload in sequence order and reject gaps.
 
 ### 6.4 GIF
@@ -245,7 +246,7 @@ payload. Written after the Global Color Table, before the first image.
 ### 6.5 Fingerprint: never restore an out-of-date project
 
 When winPaint embeds a project it also stores `hostFingerprint`: SHA-256 of the image **as it will decode**
-(width, height, then straight-alpha RGBA bytes, row by row). For JPEG and GIF it is computed from the encoded result,
+(width and height as 32-bit big-endian integers, then straight-alpha RGBA bytes, row by row, as decoded). For JPEG and GIF it is computed from the encoded result,
 so lossy compression and color reduction are accounted for.
 
 On open, winPaint decodes the image, recomputes the fingerprint and compares:

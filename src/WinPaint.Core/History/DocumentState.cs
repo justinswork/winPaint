@@ -1,4 +1,5 @@
 using WinPaint.Core.Document;
+using WinPaint.Core.Projects;
 
 namespace WinPaint.Core.History;
 
@@ -8,7 +9,7 @@ namespace WinPaint.Core.History;
 /// </summary>
 public sealed class DocumentState
 {
-    internal DocumentState(int width, int height, double dpiX, double dpiY, IReadOnlyList<Layer> layers, int activeLayerIndex)
+    internal DocumentState(int width, int height, double dpiX, double dpiY, IReadOnlyList<Layer> layers, int activeLayerIndex, ProjectExtensions? extensions = null)
     {
         Width = width;
         Height = height;
@@ -16,7 +17,11 @@ public sealed class DocumentState
         DpiY = dpiY;
         Layers = layers;
         ActiveLayerIndex = activeLayerIndex;
+        Extensions = extensions ?? ProjectExtensions.Empty;
     }
+
+    /// <summary>Extension (plugin) data stored with the project.</summary>
+    public ProjectExtensions Extensions { get; }
 
     /// <summary>Canvas width.</summary>
     public int Width { get; }

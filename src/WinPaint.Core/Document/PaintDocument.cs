@@ -1,6 +1,7 @@
 using System.Windows;
 using WinPaint.Core.History;
 using WinPaint.Core.Imaging;
+using WinPaint.Core.Projects;
 using WinPaint.Core.Text;
 
 namespace WinPaint.Core.Document;
@@ -76,6 +77,9 @@ public sealed class PaintDocument
     /// <summary>The layer tools paint on.</summary>
     public Layer ActiveLayer => Layers[Math.Clamp(ActiveLayerIndex, 0, Layers.Count - 1)];
 
+    /// <summary>Extension (plugin) data saved with the project. Change it, then <see cref="Commit"/> for undo.</summary>
+    public ProjectExtensions Extensions { get; set; } = ProjectExtensions.Empty;
+
     /// <summary>Rendered text cache shared by every layer.</summary>
     public TextRenderCache TextCache { get; } = new();
 
@@ -108,6 +112,16 @@ public sealed class PaintDocument
         var layer = doc.Layers[0];
         layer.TopSegment.Pixels = TiledSurface.FromPixelBuffer(image);
         layer.IsTransparent = image.HasTransparency();
+        doc.History.Reset(doc.CaptureState(), markSaved: true);
+        return doc;
+    }
+
+    /// <summary>Creates a document from a snapshot (e.g. an opened project); it opens clean with empty history.</summary>
+    public static PaintDocument FromState(DocumentState state)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        var doc = new PaintDocument(1, 1, 0);
+        doc.RestoreState(state);
         doc.History.Reset(doc.CaptureState(), markSaved: true);
         return doc;
     }
@@ -254,7 +268,7 @@ public sealed class PaintDocument
 
     /// <summary>Snapshot of the content (cheap; tiles are shared copy-on-write).</summary>
     public DocumentState CaptureState() =>
-        new(Width, Height, DpiX, DpiY, Layers.Select(l => l.CloneState()).ToList(), ActiveLayerIndex);
+        new(Width, Height, DpiX, DpiY, Layers.Select(l => l.CloneState()).ToList(), ActiveLayerIndex, Extensions);
 
     /// <summary>Replaces the content with a snapshot.</summary>
     public void RestoreState(DocumentState state)
@@ -268,6 +282,7 @@ public sealed class PaintDocument
         Layers.Clear();
         Layers.AddRange(state.Layers.Select(l => l.CloneState()));
         ActiveLayerIndex = Math.Clamp(state.ActiveLayerIndex, 0, Layers.Count - 1);
+        Extensions = state.Extensions;
         InvalidateAll();
     }
 

@@ -350,6 +350,90 @@ public sealed class TiledSurface
         }
     }
 
+    /// <summary>
+    /// True when every pixel has the same value (missing tiles count as 0); <paramref name="value"/> is that value.
+    /// </summary>
+    public bool TryGetUniform(out uint value)
+    {
+        value = 0;
+        for (var i = 0; i < _tiles.Length; i++)
+        {
+            var t = _tiles[i];
+            var v = t?.Uniform ?? 0;
+            if (t?.Data is not null)
+            {
+                var tx = i % TilesX;
+                var ty = i / TilesX;
+                var w = Math.Min(Tile.Size, Width - (tx << Tile.Shift));
+                var h = Math.Min(Tile.Size, Height - (ty << Tile.Shift));
+                v = t.Data[0];
+                for (var y = 0; y < h; y++)
+                {
+                    if (t.Data.AsSpan(y << Tile.Shift, w).ContainsAnyExcept(v))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            if (i == 0)
+            {
+                value = v;
+            }
+            else if (v != value)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>Bounding box of all non-zero pixels (empty when the surface is empty).</summary>
+    public PixelRect ContentBounds()
+    {
+        int minX = int.MaxValue, minY = int.MaxValue, maxX = -1, maxY = -1;
+        for (var i = 0; i < _tiles.Length; i++)
+        {
+            var t = _tiles[i];
+            if (t is null || (t.Data is null && t.Uniform == 0))
+            {
+                continue;
+            }
+
+            var ox = (i % TilesX) << Tile.Shift;
+            var oy = (i / TilesX) << Tile.Shift;
+            var w = Math.Min(Tile.Size, Width - ox);
+            var h = Math.Min(Tile.Size, Height - oy);
+            if (t.Data is null)
+            {
+                minX = Math.Min(minX, ox);
+                minY = Math.Min(minY, oy);
+                maxX = Math.Max(maxX, ox + w - 1);
+                maxY = Math.Max(maxY, oy + h - 1);
+                continue;
+            }
+
+            for (var y = 0; y < h; y++)
+            {
+                var row = t.Data.AsSpan(y << Tile.Shift, w);
+                var first = row.IndexOfAnyExcept(0u);
+                if (first < 0)
+                {
+                    continue;
+                }
+
+                var last = row.LastIndexOfAnyExcept(0u);
+                minX = Math.Min(minX, ox + first);
+                maxX = Math.Max(maxX, ox + last);
+                minY = Math.Min(minY, oy + y);
+                maxY = Math.Max(maxY, oy + y);
+            }
+        }
+
+        return maxX < 0 ? PixelRect.Empty : new PixelRect(minX, minY, maxX - minX + 1, maxY - minY + 1);
+    }
+
     /// <summary>Content equality (pixels inside the bounds).</summary>
     public bool ContentEquals(TiledSurface other)
     {
