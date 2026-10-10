@@ -64,4 +64,8 @@
   work on a background task: busy cursor, the window keeps repainting, edits and shortcuts are blocked until done.
 - **2026-10-09** On Windows 11, WPF's PrintDialog shows the system's modern print UI (separate process); the U-08 test
   cancels it there. Set-as-wallpaper is verified up to the save-first prompt only; tests never change the real wallpaper.
-- **2026-10-09** P2 items (scanner/camera import, share sheet, screen eyedropper) are not implemented (optional).
+- **2026-10-09** P2 items (scanner/camera import, share sheet, screen eyedropper) are not implemented (optional).- **2026-10-09** Third-party plugins are deferred ([docs/specs/plugin-api.md](specs/plugin-api.md) kept as a parked
+  draft). winPaint is open source, so niche features come in as contributions; ones too niche or complex for most
+  users go behind a Labs page in Settings (off by default). Built-in effects/tools/commands use internal contracts
+  shaped like the draft API so they could be opened up later. The WPP `extensions/` mechanism stays and is used by
+  winPaint's own optional features with `app.winpaint.*` ids.

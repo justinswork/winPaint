@@ -137,6 +137,10 @@ history or view state; the document opens clean (not dirty) with an empty undo s
 
 ## 5. Plugin data
 
+> **Note (2026-10-09):** third-party plugins are deferred (see [plugin-api.md](plugin-api.md)). Until then, the
+> extension mechanism is used by winPaint's own optional features (e.g. Labs features), each with its own
+> `app.winpaint.*` extension id. The format is unchanged, so projects stay compatible if plugins are added later.
+
 ### 5.1 Ownership
 
 Every plugin has an **extension id** in reverse-DNS form, e.g. `com.contoso.hotspots` (lowercase letters, digits,
